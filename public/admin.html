@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración - Madrina Estudiantil 2026</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            outfit: ['Outfit', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#faf5ff',
+              100: '#f3e8ff',
+              200: '#e9d5ff',
+              300: '#d8b4fe',
+              400: '#c084fc',
+              500: '#a855f7',
+              600: '#9333ea',
+              700: '#7e22ce',
+              800: '#6b21a8',
+              900: '#581c87',
+              950: '#3b0764',
+            },
+            darkbg: '#0b0f19',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #0b0f19;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(147, 51, 234, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.12) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+
+    .glass {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-card {
+      background: rgba(17, 24, 39, 0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .podium-1 {
+      border: 1px solid rgba(234, 179, 8, 0.3);
+      box-shadow: 0 10px 30px -10px rgba(234, 179, 8, 0.2);
+    }
+    .podium-2 {
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      box-shadow: 0 10px 30px -10px rgba(148, 163, 184, 0.15);
+    }
+    .podium-3 {
+      border: 1px solid rgba(180, 83, 9, 0.3);
+      box-shadow: 0 10px 30px -10px rgba(180, 83, 9, 0.15);
+    }
+  </style>
+</head>
+<body class="text-slate-100 font-sans min-h-screen flex flex-col justify-between">
+
+  <!-- Main Container -->
+  <div class="flex-grow w-full flex flex-col">
+
+    <!-- Header / Navbar (Visible solo cuando está logueado) -->
+    <header id="admin-header" class="hidden w-full py-5 px-4 md:px-8 border-b border-white/5 glass z-30">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-pink-500 flex items-center justify-center shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M2.166 4.9L10 1.154l7.834 3.746A1 1 0 0118.5 5.79v7.963a2 2 0 01-1.166 1.815l-6.834 3.27a1 1 0 01-.834 0l-6.834-3.27A2 2 0 011.5 13.753V5.79a1 1 0 01.666-.89zM10 11.25a1.25 1.25 0 100-2.5 1.25 1.25 0 000 2.5z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="font-outfit font-bold text-lg leading-none">Panel Administrativo</h1>
+            <p class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mt-1">Madrina Estudiantil 2026</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="hidden sm:inline text-xs bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg text-slate-300">
+            Usuario: <strong id="admin-username" class="text-white">Admin</strong>
+          </span>
+          <a href="/" target="_blank" class="text-xs text-brand-300 hover:text-brand-200 transition-colors flex items-center gap-1 font-medium">
+            Ver Sitio
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
+          <button onclick="logout()" class="px-3.5 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 text-xs font-semibold transition-all">
+            Cerrar Sesión
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Sections -->
+    <div class="w-full max-w-7xl mx-auto px-4 md:px-8 py-10 flex-grow flex items-center justify-center">
+
+      <!-- ================= VISTA DE LOGIN ================= -->
+      <section id="login-view" class="w-full max-w-md hidden">
+        <div class="glass p-8 rounded-2xl border border-white/10 shadow-2xl space-y-6">
+          <div class="text-center space-y-2">
+            <div class="w-14 h-14 bg-gradient-to-tr from-brand-600 to-pink-500 rounded-2xl flex items-center justify-center mx-auto shadow-xl">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-white" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <h2 class="font-outfit text-2xl font-bold text-white">Iniciar Sesión</h2>
+            <p class="text-slate-400 text-xs">Acceso reservado para administradores del sistema</p>
+          </div>
+
+          <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+            <div>
+              <label for="username" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Usuario</label>
+              <input 
+                type="text" 
+                id="username" 
+                name="usuario" 
+                required 
+                class="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-500 text-sm transition-all"
+                placeholder="ej: admin"
+              />
+            </div>
+            <div>
+              <label for="password" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Contraseña</label>
+              <input 
+                type="password" 
+                id="password" 
+                name="password" 
+                required 
+                class="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-500 text-sm transition-all"
+                placeholder="••••••••"
+              />
+            </div>
+            <button 
+              type="submit" 
+              class="w-full py-3 bg-brand-600 hover:bg-brand-500 text-white font-outfit font-semibold rounded-xl transition-all shadow-lg shadow-brand-600/20 active:scale-[0.98]"
+            >
+              Ingresar al Panel
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ================= VISTA DE DASHBOARD ================= -->
+      <section id="dashboard-view" class="w-full hidden space-y-10">
+
+        <!-- 1. PODIO DE PREMIACIÓN -->
+        <div class="space-y-4">
+          <h2 class="font-outfit text-xl font-bold text-white tracking-tight flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+            </svg>
+            Podio de Premiación (En Tiempo Real)
+          </h2>
+          
+          <div id="podium-container" class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+            <!-- El contenido dinámico del podio se inyectará aquí -->
+          </div>
+        </div>
+
+        <hr class="border-white/5">
+
+        <!-- 2. CRUD Y CONFIGURACIONES (Layout de 2 Columnas) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          <!-- Columna Izquierda: Formularios (Crear y Cambiar Credenciales) -->
+          <div class="lg:col-span-1 space-y-8">
+            
+            <!-- FORMULARIO 1: REGISTRAR PARTICIPANTE -->
+            <div class="glass p-6 rounded-2xl border border-white/5 shadow-xl space-y-4">
+              <h3 class="font-outfit text-base font-bold text-white border-b border-white/5 pb-2">Registrar Candidata</h3>
+              <form id="candidate-form" onsubmit="createCandidate(event)" class="space-y-3" enctype="multipart/form-data">
+                <div>
+                  <label class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Nombre Completo</label>
+                  <input type="text" name="nombre_completo" required class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2 text-white focus:outline-none focus:border-brand-500 text-xs" placeholder="ej: Sofia Valenzuela" />
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Grado</label>
+                    <input type="text" name="grado" required class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2 text-white focus:outline-none focus:border-brand-500 text-xs" placeholder="ej: Quinto Bachillerato" />
+                  </div>
+                  <div>
+                    <label class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Sección</label>
+                    <input type="text" name="seccion" required class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2 text-white focus:outline-none focus:border-brand-500 text-xs" placeholder="ej: A" />
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Fotografía</label>
+                  <input type="file" name="fotografia" accept="image/*" required id="file-input" class="hidden" onchange="previewImage(event)" />
+                  <div onclick="document.getElementById('file-input').click()" class="border-2 border-dashed border-white/10 hover:border-brand-500/50 rounded-lg p-4 text-center cursor-pointer transition-all bg-slate-900/50 flex flex-col items-center justify-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span class="text-[10px] text-slate-300 font-medium" id="upload-label">Seleccionar imagen</span>
+                  </div>
+                  <!-- Vista previa de imagen -->
+                  <div id="preview-container" class="hidden mt-2 relative rounded-lg overflow-hidden h-24 border border-white/10">
+                    <img id="img-preview" class="w-full h-full object-cover" />
+                    <button type="button" onclick="clearPreview(event)" class="absolute top-1 right-1 bg-red-600/80 hover:bg-red-600 text-white rounded-full p-1 transition-all">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-outfit text-xs font-semibold rounded-lg transition-all shadow-md active:scale-95">
+                  Registrar Candidata
+                </button>
+              </form>
+            </div>
+
+            <!-- FORMULARIO 2: CAMBIAR CREDENCIALES -->
+            <div class="glass p-6 rounded-2xl border border-white/5 shadow-xl space-y-4">
+              <h3 class="font-outfit text-base font-bold text-white border-b border-white/5 pb-2">Cambiar Credenciales</h3>
+              <form id="credentials-form" onsubmit="updateCredentials(event)" class="space-y-3">
+                <div>
+                  <label class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Nuevo Usuario</label>
+                  <input type="text" name="nuevo_usuario" class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2 text-white focus:outline-none focus:border-brand-500 text-xs" placeholder="Ingresa nuevo usuario (opcional)" />
+                </div>
+                <div>
+                  <label class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Nueva Contraseña</label>
+                  <input type="password" name="nuevo_password" class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2 text-white focus:outline-none focus:border-brand-500 text-xs" placeholder="Ingresa nueva contraseña (opcional)" />
+                </div>
+                <button type="submit" class="w-full py-2.5 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-outfit text-xs font-semibold rounded-lg transition-all active:scale-95">
+                  Actualizar Acceso
+                </button>
+              </form>
+            </div>
+
+          </div>
+
+          <!-- Columna Derecha: Tabla/Lista de Candidatas y Dashboard Realtime -->
+          <div class="lg:col-span-2 space-y-4">
+            <div class="glass rounded-2xl border border-white/5 shadow-xl overflow-hidden">
+              <div class="p-6 border-b border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h3 class="font-outfit text-base font-bold text-white">Tabla de Resultados en Vivo</h3>
+                  <p class="text-xs text-slate-400">Actualiza automáticamente cada 3 segundos</p>
+                </div>
+                <div class="flex items-center gap-1.5 self-start sm:self-center">
+                  <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                  <span class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Conexión Activa</span>
+                </div>
+              </div>
+              
+              <!-- Tabla de Resultados -->
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr class="bg-white/5 border-b border-white/5 text-slate-400 font-semibold">
+                      <th class="py-4 px-6">Foto</th>
+                      <th class="py-4 px-6">Nombre Completo</th>
+                      <th class="py-4 px-6">Grado y Sección</th>
+                      <th class="py-4 px-6 text-right">Votos</th>
+                      <th class="py-4 px-6 text-center">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="results-table-body" class="divide-y divide-white/5">
+                    <!-- Se inyectarán dinámicamente las candidatas aquí -->
+                  </tbody>
+                </table>
+              </div>
+              
+              <!-- Estado Vacío -->
+              <div id="no-results-placeholder" class="hidden p-12 text-center text-slate-400">
+                <p>No se encontraron candidatas registradas.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="w-full py-6 text-center border-t border-white/5 glass relative z-10">
+    <p class="text-slate-500 text-xs">
+      &copy; 2026 Colegio Estudiantil - Panel de Administración
+    </p>
+  </footer>
+
+  <!-- Toast Notification System -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-md w-full px-4 sm:px-0"></div>
+
+  <!-- JavaScript logics -->
+  <script>
+    let resultsInterval = null;
+    const toastContainer = document.getElementById('toast-container');
+    const loginView = document.getElementById('login-view');
+    const dashboardView = document.getElementById('dashboard-view');
+    const adminHeader = document.getElementById('admin-header');
+    const adminUsername = document.getElementById('admin-username');
+
+    // Cargar inicial y verificar sesión
+    document.addEventListener('DOMContentLoaded', checkSession);
+
+    // Toast Alert system
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `glass px-5 py-4 rounded-xl flex items-center gap-3 border shadow-2xl transition-all duration-300 transform translate-y-2 opacity-0`;
+      
+      if (type === 'success') {
+        toast.classList.add('border-green-500/20');
+        toast.innerHTML = `
+          <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="text-sm font-medium text-slate-200">${message}</div>
+        `;
+      } else {
+        toast.classList.add('border-red-500/20');
+        toast.innerHTML = `
+          <div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="text-sm font-medium text-slate-200">${message}</div>
+        `;
+      }
+
+      toastContainer.appendChild(toast);
+      setTimeout(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      }, 50);
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-[-10px]', 'opacity-0');
+        setTimeout(() => {
+          toast.remove();
+        }, 300);
+      }, 4000);
+    }
+
+    // Check Session status from Backend
+    async function checkSession() {
+      try {
+        const response = await fetch('/api/admin/check-session');
+        const data = await response.json();
+        
+        if (data.loggedIn) {
+          adminUsername.innerText = data.usuario;
+          showDashboard(true);
+        } else {
+          showDashboard(false);
+        }
+      } catch (error) {
+        showDashboard(false);
+      }
+    }
+
+    // Toggle views
+    function showDashboard(isActive) {
+      if (isActive) {
+        loginView.classList.add('hidden');
+        dashboardView.classList.remove('hidden');
+        adminHeader.classList.remove('hidden');
+        
+        // Carga inicial y arranque de polling cada 3s
+        loadDashboardData();
+        if (!resultsInterval) {
+          resultsInterval = setInterval(loadDashboardData, 3000);
+        }
+      } else {
+        loginView.classList.remove('hidden');
+        dashboardView.classList.add('hidden');
+        adminHeader.classList.add('hidden');
+        
+        // Detener polling
+        if (resultsInterval) {
+          clearInterval(resultsInterval);
+          resultsInterval = null;
+        }
+      }
+    }
+
+    // login
+    async function handleLogin(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const payload = Object.fromEntries(formData.entries());
+
+      try {
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+          form.reset();
+          adminUsername.innerText = data.usuario;
+          showDashboard(true);
+          showToast('Bienvenido al panel administrador.');
+        } else {
+          showToast(data.error || 'Acceso Denegado', 'error');
+        }
+      } catch (error) {
+        showToast('Error de red. Intenta nuevamente.', 'error');
+      }
+    }
+
+    // Logout
+    async function logout() {
+      try {
+        const response = await fetch('/api/logout');
+        if (response.ok) {
+          showDashboard(false);
+          showToast('Sesión cerrada correctamente.');
+        }
+      } catch (error) {
+        showToast('Error de conexión al cerrar sesión.', 'error');
+      }
+    }
+
+    // Cargar datos en vivo (podio y lista)
+    async function loadDashboardData() {
+      try {
+        const response = await fetch('/api/admin/resultados');
+        if (response.status === 401) {
+          // Sesión expirada
+          showDashboard(false);
+          showToast('Sesión expirada. Por favor inicie sesión.', 'error');
+          return;
+        }
+        
+        if (!response.ok) throw new Error('Error al cargar resultados');
+        
+        const candidatas = await response.json();
+        renderPodium(candidatas);
+        renderTable(candidatas);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // Renderizar Podio (1er, 2do y 3er lugar)
+    function renderPodium(candidatas) {
+      const podiumContainer = document.getElementById('podium-container');
+      
+      if (candidatas.length === 0) {
+        podiumContainer.innerHTML = `
+          <div class="col-span-full text-center py-6 text-slate-500 font-medium">
+            El podio se actualizará cuando registre candidatas y se emitan votos.
+          </div>
+        `;
+        return;
+      }
+
+      // Ordenar para el podio visual: [2do Lugar, 1er Lugar, 3er Lugar]
+      // Si solo hay 1 o 2 participantes, se acomodan de forma bonita.
+      const top3 = candidatas.slice(0, 3);
+      
+      let podiumOrder = [];
+      if (top3.length === 1) {
+        podiumOrder = [null, top3[0], null];
+      } else if (top3.length === 2) {
+        podiumOrder = [top3[1], top3[0], null];
+      } else {
+        podiumOrder = [top3[1], top3[0], top3[2]]; // 2do en la izq, 1ro en centro, 3ro en der
+      }
+
+      let podiumHTML = '';
+
+      podiumOrder.forEach((cand, idx) => {
+        // idx = 0: Segundo Lugar, idx = 1: Primer Lugar, idx = 2: Tercer Lugar
+        if (!cand) {
+          // Espacio vacío para balancear el diseño del podio
+          podiumHTML += `
+            <div class="hidden md:flex flex-col items-center justify-center p-6 h-36 border border-white/5 rounded-2xl bg-white/5 opacity-20 text-xs">
+              Vacío
+            </div>
+          `;
+          return;
+        }
+
+        let label, colorClass, crownIcon, sizeClass, borderClass;
+        
+        if (cand.id === top3[0].id) {
+          // 1er lugar (Oro)
+          label = "1er Lugar";
+          colorClass = "bg-yellow-500 text-slate-950 font-bold border-yellow-400";
+          borderClass = "podium-1";
+          sizeClass = "md:h-[280px] z-10 transform scale-100 md:scale-105 border-yellow-500/30";
+          crownIcon = `
+            <div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-yellow-500 text-slate-900 p-2.5 rounded-full shadow-lg shadow-yellow-500/30 ring-4 ring-yellow-500/20">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+            </div>
+          `;
+        } else if (cand.id === (top3[1] && top3[1].id)) {
+          // 2do lugar (Plata)
+          label = "2do Lugar";
+          colorClass = "bg-slate-400 text-slate-950 font-bold border-slate-300";
+          borderClass = "podium-2";
+          sizeClass = "md:h-[230px] border-slate-500/20";
+          crownIcon = `
+            <div class="absolute -top-5 left-1/2 -translate-x-1/2 bg-slate-400 text-slate-900 p-1.5 rounded-full shadow-lg ring-4 ring-slate-400/20">
+              <span class="text-xs font-bold font-outfit px-1">2</span>
+            </div>
+          `;
+        } else {
+          // 3er lugar (Bronce)
+          label = "3er Lugar";
+          colorClass = "bg-amber-700 text-white font-bold border-amber-600";
+          borderClass = "podium-3";
+          sizeClass = "md:h-[200px] border-amber-700/20";
+          crownIcon = `
+            <div class="absolute -top-5 left-1/2 -translate-x-1/2 bg-amber-700 text-white p-1.5 rounded-full shadow-lg ring-4 ring-amber-700/20">
+              <span class="text-xs font-bold font-outfit px-1">3</span>
+            </div>
+          `;
+        }
+
+        podiumHTML += `
+          <div class="relative glass-card rounded-2xl overflow-hidden p-6 flex flex-col items-center justify-between text-center ${sizeClass} ${borderClass}">
+            ${crownIcon}
+            
+            <div class="mt-4 flex flex-col items-center gap-3 w-full">
+              <!-- Foto pequeña -->
+              <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-white/10 shadow-md">
+                <img src="${cand.fotografia}" alt="${cand.nombre_completo}" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200';"/>
+              </div>
+
+              <!-- Nombre -->
+              <div>
+                <h4 class="font-outfit text-sm font-bold text-white line-clamp-1">${cand.nombre_completo}</h4>
+                <p class="text-[10px] text-slate-400 font-medium">${cand.grado} (${cand.seccion})</p>
+              </div>
+            </div>
+
+            <!-- Contador de Votos -->
+            <div class="w-full mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
+              <span class="inline-flex px-2 py-0.5 rounded-full text-[9px] font-semibold uppercase tracking-wider ${colorClass}">
+                ${label}
+              </span>
+              <span class="font-outfit text-sm font-bold text-white">${cand.votos} votos</span>
+            </div>
+          </div>
+        `;
+      });
+
+      podiumContainer.innerHTML = podiumHTML;
+    }
+
+    // Renderizar Tabla
+    function renderTable(candidatas) {
+      const tbody = document.getElementById('results-table-body');
+      const placeholder = document.getElementById('no-results-placeholder');
+      
+      if (candidatas.length === 0) {
+        tbody.innerHTML = '';
+        placeholder.classList.remove('hidden');
+        return;
+      }
+
+      placeholder.classList.add('hidden');
+      tbody.innerHTML = '';
+
+      candidatas.forEach((cand) => {
+        const row = document.createElement('tr');
+        row.className = "hover:bg-white/5 transition-colors border-b border-white/5";
+        row.innerHTML = `
+          <td class="py-4 px-6">
+            <div class="w-10 h-10 rounded-lg overflow-hidden border border-white/10 bg-slate-900">
+              <img src="${cand.fotografia}" alt="${cand.nombre_completo}" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100';" />
+            </div>
+          </td>
+          <td class="py-4 px-6 font-semibold text-white">${cand.nombre_completo}</td>
+          <td class="py-4 px-6 text-slate-300">${cand.grado} • Sección ${cand.seccion}</td>
+          <td class="py-4 px-6 text-right font-outfit font-bold text-sm text-white">${cand.votos}</td>
+          <td class="py-4 px-6 text-center">
+            <button 
+              onclick="deleteCandidate(${cand.id}, '${cand.nombre_completo.replace(/'/g, "\\'")}')" 
+              class="px-2.5 py-1.5 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all font-medium text-[11px]"
+            >
+              Eliminar
+            </button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Imagen en Vista Previa
+    function previewImage(event) {
+      const file = event.target.files[0];
+      const previewContainer = document.getElementById('preview-container');
+      const previewImg = document.getElementById('img-preview');
+      const uploadLabel = document.getElementById('upload-label');
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          previewImg.src = e.target.result;
+          previewContainer.classList.remove('hidden');
+          uploadLabel.innerText = "Imagen seleccionada: " + (file.name.length > 20 ? file.name.substring(0, 18) + '...' : file.name);
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Limpiar Vista Previa
+    function clearPreview(e) {
+      e.stopPropagation();
+      document.getElementById('file-input').value = "";
+      document.getElementById('preview-container').classList.add('hidden');
+      document.getElementById('img-preview').src = "";
+      document.getElementById('upload-label').innerText = "Seleccionar imagen";
+    }
+
+    // CRUD: Registrar participante
+    async function createCandidate(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch('/api/admin/participantes', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          form.reset();
+          document.getElementById('preview-container').classList.add('hidden');
+          document.getElementById('upload-label').innerText = "Seleccionar imagen";
+          showToast('Participante registrada con éxito');
+          loadDashboardData();
+        } else {
+          showToast(data.error || 'Error al registrar participante', 'error');
+        }
+      } catch (error) {
+        showToast('Error en la comunicación con el servidor', 'error');
+      }
+    }
+
+    // CRUD: Eliminar participante
+    async function deleteCandidate(id, name) {
+      if (!confirm(`¿Está seguro de que desea eliminar a la participante "${name}"? Esta acción no se puede deshacer.`)) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/admin/participantes/${id}`, {
+          method: 'DELETE'
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          showToast(`Participante "${name}" eliminada exitosamente.`);
+          loadDashboardData();
+        } else {
+          showToast(data.error || 'No se pudo eliminar a la participante', 'error');
+        }
+      } catch (error) {
+        showToast('Error de red al intentar eliminar', 'error');
+      }
+    }
+
+    // Configuración: Cambiar credenciales
+    async function updateCredentials(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const payload = {};
+      
+      const nuevo_usuario = formData.get('nuevo_usuario').trim();
+      const nuevo_password = formData.get('nuevo_password').trim();
+
+      if (!nuevo_usuario && !nuevo_password) {
+        showToast('Debe completar al menos un campo para actualizar', 'error');
+        return;
+      }
+
+      if (nuevo_usuario) payload.nuevo_usuario = nuevo_usuario;
+      if (nuevo_password) payload.nuevo_password = nuevo_password;
+
+      try {
+        const response = await fetch('/api/admin/credenciales', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          form.reset();
+          if (payload.nuevo_usuario) {
+            adminUsername.innerText = payload.nuevo_usuario;
+          }
+          showToast('Credenciales de administrador actualizadas con éxito');
+        } else {
+          showToast(data.error || 'No se pudieron actualizar las credenciales', 'error');
+        }
+      } catch (error) {
+        showToast('Error al conectar con el servidor', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

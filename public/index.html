@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elección Madrina Estudiantil 2026</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Portal oficial de votaciones para la Elección de la Madrina Estudiantil 2026. ¡Apoya a tu candidata favorita!">
+  
+  <!-- Google Fonts: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Tailwind Custom Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            outfit: ['Outfit', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#faf5ff',
+              100: '#f3e8ff',
+              200: '#e9d5ff',
+              300: '#d8b4fe',
+              400: '#c084fc',
+              500: '#a855f7',
+              600: '#9333ea',
+              700: '#7e22ce',
+              800: '#6b21a8',
+              900: '#581c87',
+              950: '#3b0764',
+            },
+            darkbg: '#0b0f19',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom CSS for Orbs and Transitions -->
+  <style>
+    body {
+      background-color: #0b0f19;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(147, 51, 234, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.15) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      z-index: 0;
+      pointer-events: none;
+      animation: float 20s infinite alternate;
+    }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(40px, 60px) scale(1.2); }
+    }
+
+    .glass {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-card {
+      background: rgba(17, 24, 39, 0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-card:hover {
+      background: rgba(17, 24, 39, 0.6);
+      border-color: rgba(168, 85, 247, 0.4);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px -15px rgba(147, 51, 234, 0.3);
+    }
+  </style>
+</head>
+<body class="text-slate-100 font-sans min-h-screen relative overflow-x-hidden flex flex-col justify-between">
+
+  <!-- Ambient Glowing Orbs -->
+  <div class="orb w-[300px] h-[300px] bg-purple-600/20 top-20 left-[10%]"></div>
+  <div class="orb w-[350px] h-[350px] bg-blue-600/10 bottom-20 right-[10%]"></div>
+  <div class="orb w-[250px] h-[250px] bg-pink-500/15 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+
+  <!-- Header -->
+  <header class="w-full py-6 px-4 md:px-8 border-b border-white/5 relative z-10 glass">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-pink-500 flex items-center justify-center shadow-lg shadow-brand-500/20">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+        </div>
+        <div>
+          <h1 id="main-title" class="font-outfit font-bold text-xl tracking-tight bg-gradient-to-r from-white via-slate-100 to-purple-300 bg-clip-text text-transparent">Colegio Estudiantil</h1>
+          <p class="text-xs text-slate-400 font-medium tracking-wide uppercase">Elecciones Madrina 2026</p>
+        </div>
+      </div>
+      <nav class="flex items-center gap-4">
+        <a href="#candidatas" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Candidatas</a>
+        <a href="/admin" class="text-sm font-medium px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-all">Acceso Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="relative z-10 max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-20 flex-grow w-full">
+    <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-300 border border-brand-500/20">
+        <span class="w-1.5 h-1.5 rounded-full bg-brand-400 animate-ping"></span>
+        Votaciones Abiertas
+      </span>
+      <h2 class="font-outfit text-4xl md:text-6xl font-extrabold tracking-tight leading-none text-white">
+        Elige a nuestra <br class="hidden sm:inline">
+        <span class="bg-gradient-to-r from-brand-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">Madrina Estudiantil 2026</span>
+      </h2>
+      <p class="text-slate-400 md:text-lg max-w-xl mx-auto font-light leading-relaxed">
+        Conoce a las participantes de los distintos grados y apoya a tu favorita. Tu voto decide quién será la representante de nuestro colegio.
+      </p>
+    </div>
+
+    <!-- Candidate List Section -->
+    <section id="candidatas" class="scroll-mt-28">
+      <div id="loader" class="flex flex-col items-center justify-center py-20 space-y-4">
+        <div class="w-12 h-12 rounded-full border-4 border-brand-500/30 border-t-brand-500 animate-spin"></div>
+        <p class="text-slate-400 font-medium">Cargando participantes...</p>
+      </div>
+
+      <!-- No candidates template -->
+      <div id="no-candidates" class="hidden text-center py-20 glass rounded-2xl max-w-lg mx-auto p-8 border border-white/5">
+        <div class="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/10">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <h3 class="font-outfit text-xl font-bold text-white mb-2">No hay candidatas registradas</h3>
+        <p class="text-slate-400 text-sm">El administrador del sistema aún no ha registrado candidatas en esta edición.</p>
+      </div>
+
+      <!-- Candidates Grid -->
+      <div id="grid-participantes" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full py-8 px-4 text-center border-t border-white/5 relative z-10 glass mt-12">
+    <p class="text-slate-500 text-sm">
+      &copy; 2026 Colegio Estudiantil - Todos los derechos reservados.
+    </p>
+  </footer>
+
+  <!-- Toast Notification System -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-md w-full px-4 sm:px-0"></div>
+
+  <!-- JavaScript Logics -->
+  <script>
+    // Variables globales
+    const gridParticipantes = document.getElementById('grid-participantes');
+    const loader = document.getElementById('loader');
+    const noCandidates = document.getElementById('no-candidates');
+    const toastContainer = document.getElementById('toast-container');
+
+    // Obtener los votos almacenados localmente para deshabilitar botones
+    const getVotedCandidates = () => {
+      try {
+        return JSON.parse(localStorage.getItem('madrina_voted_ids')) || [];
+      } catch (e) {
+        return [];
+      }
+    };
+
+    const addVotedCandidate = (id) => {
+      const voted = getVotedCandidates();
+      if (!voted.includes(id)) {
+        voted.push(id);
+        localStorage.setItem('madrina_voted_ids', JSON.stringify(voted));
+      }
+    };
+
+    // Mostrar notificación Toast
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `glass px-5 py-4 rounded-xl flex items-center gap-3 border shadow-2xl transition-all duration-300 transform translate-y-2 opacity-0`;
+      
+      if (type === 'success') {
+        toast.classList.add('border-green-500/20');
+        toast.innerHTML = `
+          <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="text-sm font-medium text-slate-200">${message}</div>
+        `;
+      } else {
+        toast.classList.add('border-red-500/20');
+        toast.innerHTML = `
+          <div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="text-sm font-medium text-slate-200">${message}</div>
+        `;
+      }
+
+      toastContainer.appendChild(toast);
+      
+      // Animar entrada
+      setTimeout(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      }, 50);
+
+      // Programar salida
+      setTimeout(() => {
+        toast.classList.add('translate-y-[-10px]', 'opacity-0');
+        setTimeout(() => {
+          toast.remove();
+        }, 300);
+      }, 4000);
+    }
+
+    // Cargar candidatas desde la API
+    async function loadCandidates() {
+      try {
+        const response = await fetch('/api/participantes');
+        if (!response.ok) throw new Error('Error al cargar participantes');
+        
+        const participantes = await response.json();
+        loader.classList.add('hidden');
+
+        if (participantes.length === 0) {
+          noCandidates.classList.remove('hidden');
+          return;
+        }
+
+        noCandidates.classList.add('hidden');
+        gridParticipantes.innerHTML = '';
+        
+        const votedIds = getVotedCandidates();
+
+        participantes.forEach(candidata => {
+          const yaVoto = votedIds.includes(candidata.id);
+          
+          const card = document.createElement('div');
+          card.className = 'glass-card rounded-2xl overflow-hidden flex flex-col h-full';
+          card.setAttribute('id', `candidata-${candidata.id}`);
+          card.innerHTML = `
+            <!-- Contenedor Foto -->
+            <div class="relative aspect-[4/5] overflow-hidden w-full bg-slate-900 group">
+              <!-- Grado y Sección Tag -->
+              <span class="absolute top-4 left-4 z-20 font-outfit text-xs font-semibold px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-md text-brand-300 border border-white/10">
+                ${candidata.grado} ${candidata.seccion}
+              </span>
+              
+              <!-- Imagen -->
+              <img 
+                src="${candidata.fotografia}" 
+                alt="${candidata.nombre_completo}" 
+                class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=600';"
+              />
+
+              <!-- Overlay Gradiente -->
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-80 z-10"></div>
+            </div>
+
+            <!-- Contenido Informativo -->
+            <div class="p-6 flex flex-col justify-between flex-grow relative z-20">
+              <div class="space-y-1 mb-6">
+                <h3 class="font-outfit text-xl font-bold text-white tracking-tight leading-tight">${candidata.nombre_completo}</h3>
+                <p class="text-sm text-slate-400">${candidata.grado} • Sección ${candidata.seccion}</p>
+              </div>
+
+              <div class="flex items-center justify-between gap-4 mt-auto">
+                <div class="flex flex-col">
+                  <span id="vote-count-${candidata.id}" class="font-outfit text-lg font-bold text-white">${candidata.votos}</span>
+                  <span class="text-[10px] text-slate-500 uppercase font-semibold tracking-wider">Votos</span>
+                </div>
+
+                <button 
+                  id="btn-votar-${candidata.id}"
+                  onclick="votar(${candidata.id})"
+                  class="w-32 py-2.5 px-4 font-outfit text-sm font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 border ${
+                    yaVoto 
+                    ? 'bg-green-500/10 border-green-500/30 text-green-400 cursor-default' 
+                    : 'bg-brand-600 border-brand-500 hover:bg-brand-500 text-white shadow-lg shadow-brand-600/20 active:scale-95'
+                  }"
+                  ${yaVoto ? 'disabled' : ''}
+                >
+                  ${yaVoto ? `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    Votado
+                  ` : 'Votar'}
+                </button>
+              </div>
+            </div>
+          `;
+          gridParticipantes.appendChild(card);
+        });
+      } catch (error) {
+        console.error(error);
+        loader.classList.add('hidden');
+        showToast('Error de red al cargar las participantes', 'error');
+      }
+    }
+
+    // Función para emitir voto
+    async function votar(id) {
+      const btn = document.getElementById(`btn-votar-${id}`);
+      if (!btn || btn.disabled) return;
+
+      // Estado cargando
+      const originalText = btn.innerText;
+      btn.disabled = true;
+      btn.innerHTML = `
+        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Procesando
+      `;
+
+      try {
+        const response = await fetch(`/api/votar/${id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Guardar voto localmente
+          addVotedCandidate(id);
+
+          // Actualizar contador visual de votos
+          const countSpan = document.getElementById(`vote-count-${id}`);
+          if (countSpan) {
+            const currentVotes = parseInt(countSpan.innerText) || 0;
+            countSpan.innerText = currentVotes + 1;
+            // Destello de animación
+            countSpan.classList.add('text-brand-300', 'scale-110');
+            setTimeout(() => {
+              countSpan.classList.remove('text-brand-300', 'scale-110');
+            }, 500);
+          }
+
+          // Cambiar botón a estado Votado
+          btn.className = "w-32 py-2.5 px-4 font-outfit text-sm font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 border bg-green-500/10 border-green-500/30 text-green-400 cursor-default";
+          btn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+            Votado
+          `;
+          
+          showToast('¡Voto registrado con éxito! Gracias por tu participación.');
+        } else {
+          // Revertir estado si hay error
+          btn.disabled = false;
+          btn.innerText = originalText;
+          showToast(data.error || 'No se pudo registrar tu voto', 'error');
+        }
+      } catch (error) {
+        console.error(error);
+        btn.disabled = false;
+        btn.innerText = originalText;
+        showToast('Error de red. Intenta nuevamente.', 'error');
+      }
+    }
+
+    // Inicializar carga de candidatas
+    document.addEventListener('DOMContentLoaded', loadCandidates);
+  </script>
+</body>
+</html>

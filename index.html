@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elección Madrina Estudiantil 2026</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Portal oficial de votaciones para la Elección de la Madrina Estudiantil 2026. ¡Apoya a tu candidata favorita!">
+  
+  <!-- Google Fonts: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Tailwind Custom Config -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            outfit: ['Outfit', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#faf5ff',
+              100: '#f3e8ff',
+              200: '#e9d5ff',
+              300: '#d8b4fe',
+              400: '#c084fc',
+              500: '#a855f7',
+              600: '#9333ea',
+              700: '#7e22ce',
+              800: '#6b21a8',
+              900: '#581c87',
+              950: '#3b0764',
+            },
+            darkbg: '#0b0f19',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom CSS for Orbs and Transitions -->
+  <style>
+    body {
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    
+    /* Fondo modo oscuro */
+    .dark body {
+      background-color: #0b0f19;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(147, 51, 234, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.15) 0px, transparent 50%);
+    }
+
+    /* Fondo modo claro */
+    html:not(.dark) body {
+      background-color: #f8fafc;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(168, 85, 247, 0.08) 0px, transparent 55%),
+        radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.08) 0px, transparent 55%);
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      z-index: 0;
+      pointer-events: none;
+      animation: float 20s infinite alternate;
+    }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(40px, 60px) scale(1.2); }
+    }
+
+    .glass {
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .glass-card {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+<body class="text-slate-800 dark:text-slate-100 font-sans min-h-screen relative overflow-x-hidden flex flex-col justify-between">
+
+  <!-- Protocol Warning Banner for file:// -->
+  <div id="protocol-warning" class="hidden fixed inset-0 z-50 bg-slate-950/90 flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="glass max-w-lg w-full p-8 rounded-2xl border border-red-500/20 text-center space-y-4 shadow-2xl bg-white/90 dark:bg-slate-900/95">
+      <div class="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto ring-4 ring-red-500/5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+      <h3 class="font-outfit text-xl font-bold">⚠️ Archivo abierto de forma incorrecta</h3>
+      <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+        Estás abriendo la página directamente haciendo doble clic desde tus archivos (`file://`). Los navegadores bloquean la conexión con PHP en este modo.
+      </p>
+      <div class="bg-slate-100 dark:bg-black/40 p-4 rounded-xl text-xs text-left space-y-2 border border-slate-200 dark:border-white/5 font-mono">
+        <p class="text-brand-600 dark:text-brand-300 font-bold">Para resolverlo:</p>
+        <p>1. Asegúrate de ejecutar <span class="font-bold">usbwebserver.exe</span>.</p>
+        <p>2. Copia los archivos a la carpeta <span class="font-bold">root</span> de USBWebserver.</p>
+        <p>3. Entra desde tu navegador escribiendo:<br><span class="text-green-600 dark:text-green-400 font-bold">http://localhost:8080/index.html</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ambient Glowing Orbs -->
+  <div class="orb w-[300px] h-[300px] bg-purple-600/10 dark:bg-purple-600/20 top-20 left-[10%]"></div>
+  <div class="orb w-[350px] h-[350px] bg-blue-600/5 dark:bg-blue-600/10 bottom-20 right-[10%]"></div>
+
+  <!-- Contenedor Principal con pasos de Votación -->
+  <main class="relative z-10 max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-20 flex-grow w-full">
+    
+    <!-- PASO 1: PANTALLA DE CANDIDATAS -->
+    <div id="voting-step" class="space-y-12">
+      <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+        <span id="public-voting-status-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20">
+          <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-ping"></span>
+          Cargando...
+        </span>
+        <h2 class="font-outfit text-4xl md:text-6xl font-extrabold tracking-tight leading-none text-slate-900 dark:text-white">
+          <span class="block text-xl md:text-2xl font-bold tracking-tight text-brand-600 dark:text-brand-400 mb-3">CEMG José Efraín Bú Girón</span>
+          Elige a nuestra <br class="hidden sm:inline">
+          <span class="bg-gradient-to-r from-brand-600 via-pink-500 to-blue-500 dark:from-brand-400 dark:via-pink-400 dark:to-blue-400 bg-clip-text text-transparent">Madrina Estudiantil 2026</span>
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 md:text-lg max-w-xl mx-auto font-light leading-relaxed">
+          Conoce a las participantes de los distintos grados y apoya a tu favorita. Tu voto decide quién será la representante de nuestro colegio.
+        </p>
+      </div>
+
+      <!-- Candidatas Grid -->
+      <section id="candidatas" class="scroll-mt-28">
+        <div id="loader" class="flex flex-col items-center justify-center py-20 space-y-4">
+          <div class="w-12 h-12 rounded-full border-4 border-brand-500/30 border-t-brand-500 animate-spin"></div>
+          <p class="text-slate-500 dark:text-slate-400 font-medium">Cargando participantes...</p>
+        </div>
+
+        <!-- No candidates template -->
+        <div id="no-candidates" class="hidden text-center py-20 glass rounded-2xl max-w-lg mx-auto p-8 border border-slate-200 dark:border-white/5 bg-white/70 dark:bg-slate-900/40">
+          <div class="w-16 h-16 bg-slate-100 dark:bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-200 dark:border-white/10">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h3 class="font-outfit text-xl font-bold mb-2">No hay candidatas registradas</h3>
+          <p class="text-slate-500 dark:text-slate-400 text-sm">El administrador del sistema aún no ha registrado candidatas en esta edición.</p>
+        </div>
+
+        <div id="grid-participantes" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+      </section>
+    </div>
+
+    <!-- PASO 2: PANTALLA DE ÉXITO (Oculta por defecto) -->
+    <div id="success-step" class="hidden max-w-xl mx-auto py-12 md:py-20">
+      <div class="glass p-8 md:p-12 rounded-3xl border border-slate-200 dark:border-white/10 shadow-2xl bg-white/80 dark:bg-slate-900/50 text-center space-y-8">
+        
+        <!-- Icono check gigante -->
+        <div class="w-24 h-24 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto ring-8 ring-green-500/5 animate-bounce">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+          </svg>
+        </div>
+
+        <div class="space-y-3">
+          <h2 class="font-outfit text-3xl font-extrabold text-slate-900 dark:text-white">Voto Enviado.</h2>
+          <p class="text-slate-600 dark:text-slate-300 font-medium">Se ha enviado el voto correctamente.</p>
+          <p id="success-message-detail" class="text-sm text-slate-500 dark:text-slate-400 italic mt-2"></p>
+        </div>
+
+        <div class="border-t border-slate-200 dark:border-white/5 pt-6">
+          <button 
+            onclick="resetVotingView()" 
+            class="w-full py-3 px-6 bg-brand-600 hover:bg-brand-500 dark:bg-brand-600 dark:hover:bg-brand-500 text-white font-outfit font-semibold rounded-xl transition-all shadow-lg shadow-brand-600/20 active:scale-95 flex items-center justify-center gap-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 110 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+            </svg>
+            Nuevo Voto
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full py-8 px-4 text-center border-t border-slate-200/50 dark:border-white/5 relative z-10 glass bg-white/80 dark:bg-slate-900/70 mt-12">
+    <p class="text-slate-500 text-sm">
+      &copy; 2026 CEMG José Efraín Bú Girón - Todos los derechos reservados.
+    </p>
+  </footer>
+
+  <!-- Toast Notification System -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-md w-full px-4 sm:px-0"></div>
+
+  <!-- JavaScript Logics -->
+  <script>
+    // Inicializar y sincronizar tema con localStorage
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
+    // Cambiar tema
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    // Validar protocolo al iniciar
+    if (window.location.protocol === 'file:') {
+      document.getElementById('protocol-warning').classList.remove('hidden');
+    }
+
+    // Variables globales
+    const gridParticipantes = document.getElementById('grid-participantes');
+    const loader = document.getElementById('loader');
+    const noCandidates = document.getElementById('no-candidates');
+    const toastContainer = document.getElementById('toast-container');
+    const votingStep = document.getElementById('voting-step');
+    const successStep = document.getElementById('success-step');
+    const successMessageDetail = document.getElementById('success-message-detail');
+
+    // Obtener los votos almacenados localmente para deshabilitar botones
+    const getVotedCandidates = () => {
+      try {
+        return JSON.parse(localStorage.getItem('madrina_voted_ids')) || [];
+      } catch (e) {
+        return [];
+      }
+    };
+
+    const addVotedCandidate = (id) => {
+      const voted = getVotedCandidates();
+      if (!voted.includes(id)) {
+        voted.push(id);
+        localStorage.setItem('madrina_voted_ids', JSON.stringify(voted));
+      }
+    };
+
+    // Mostrar notificación Toast
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `glass px-5 py-4 rounded-xl flex items-center gap-3 border shadow-2xl transition-all duration-300 transform translate-y-2 opacity-0 bg-white/95 dark:bg-slate-900/90`;
+      
+      if (type === 'success') {
+        toast.classList.add('border-green-500/20');
+        toast.innerHTML = `
+          <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="text-sm font-medium text-slate-800 dark:text-slate-200">${message}</div>
+        `;
+      } else {
+        toast.classList.add('border-red-500/20');
+        toast.innerHTML = `
+          <div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="text-sm font-medium text-slate-800 dark:text-slate-200">${message}</div>
+        `;
+      }
+
+      toastContainer.appendChild(toast);
+      
+      // Animar entrada
+      setTimeout(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      }, 50);
+
+      // Programar salida
+      setTimeout(() => {
+        toast.classList.add('translate-y-[-10px]', 'opacity-0');
+        setTimeout(() => {
+          toast.remove();
+        }, 300);
+      }, 6000);
+    }
+
+    // Cargar candidatas desde la API PHP (e verificar estado)
+    async function loadCandidates() {
+      try {
+        const resPart = fetch('api.php?action=participantes');
+        const resStatus = fetch('api.php?action=estado-votacion');
+        const resTheme = fetch('api.php?action=tema');
+
+        const [response, responseStatus, responseTheme] = await Promise.all([resPart, resStatus, resTheme]);
+        
+        // Sincronizar tema de inmediato si es exitoso
+        if (responseTheme.ok) {
+          try {
+            const themeData = await responseTheme.json();
+            const theme = themeData.tema;
+            if (theme === 'dark') {
+              document.documentElement.classList.add('dark');
+              localStorage.setItem('theme', 'dark');
+            } else {
+              document.documentElement.classList.remove('dark');
+              localStorage.setItem('theme', 'light');
+            }
+          } catch (e) {
+            console.error('Error parsing theme:', e);
+          }
+        }
+        
+        // Capturar errores no-JSON del servidor de manera elegante
+        const text = await response.text();
+        let participantes;
+        try {
+          participantes = JSON.parse(text);
+        } catch (e) {
+          loader.classList.add('hidden');
+          showToast('Error del servidor: ' + text.substring(0, 250), 'error');
+          return;
+        }
+
+        if (!response.ok) {
+          loader.classList.add('hidden');
+          showToast(participantes.error || 'Error al cargar participantes', 'error');
+          return;
+        }
+
+        // Obtener estado de la votación
+        let status = 'cerrada';
+        if (responseStatus.ok) {
+          try {
+            const statusData = await responseStatus.json();
+            status = statusData.estado;
+          } catch (e) {
+            status = 'cerrada';
+          }
+        }
+
+        // Actualizar el badge público de estado
+        const badge = document.getElementById('public-voting-status-badge');
+        if (badge) {
+          if (status === 'abierta') {
+            badge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20";
+            badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-ping"></span> Votaciones Abiertas`;
+          } else if (status === 'pausada') {
+            badge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border border-yellow-500/20";
+            badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Votaciones Pausadas`;
+          } else {
+            badge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20";
+            badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Votaciones Cerradas`;
+          }
+        }
+
+        loader.classList.add('hidden');
+
+        if (participantes.length === 0) {
+          noCandidates.classList.remove('hidden');
+          return;
+        }
+
+        noCandidates.classList.add('hidden');
+        gridParticipantes.innerHTML = '';
+        
+        const votedIds = getVotedCandidates();
+
+        participantes.forEach(candidata => {
+          const yaVoto = votedIds.includes(candidata.id);
+          const deshabilitado = yaVoto || status !== 'abierta';
+          
+          let btnText = 'Votar';
+          let btnClass = 'bg-brand-600 border-brand-500 hover:bg-brand-500 text-white shadow-lg shadow-brand-600/10 dark:shadow-brand-600/20 active:scale-95';
+          
+          if (yaVoto) {
+            btnText = `
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              Votado`;
+            btnClass = 'bg-green-500/10 border-green-500/30 text-green-600 dark:text-green-400 cursor-default';
+          } else if (status === 'pausada') {
+            btnText = 'Pausado';
+            btnClass = 'bg-yellow-500/10 border-yellow-500/20 text-yellow-600 dark:text-yellow-400 cursor-default';
+          } else if (status === 'cerrada') {
+            btnText = 'Cerrado';
+            btnClass = 'bg-red-500/10 border-red-500/20 text-red-650 dark:text-red-400 cursor-default';
+          }
+          
+          const card = document.createElement('div');
+          card.className = 'glass-card rounded-2xl overflow-hidden flex flex-col h-full bg-white/50 border border-slate-200/50 dark:bg-slate-900/45 dark:border-white/5 hover:bg-white hover:shadow-xl dark:hover:bg-slate-900/60 dark:hover:border-brand-500/30';
+          card.setAttribute('id', `candidata-${candidata.id}`);
+          card.innerHTML = `
+            <!-- Contenedor Foto -->
+            <div class="relative aspect-[4/5] overflow-hidden w-full bg-slate-950/20 dark:bg-slate-900 group">
+              <!-- Grado y Sección Tag -->
+              <span class="absolute top-4 left-4 z-20 font-outfit text-xs font-semibold px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-md text-brand-300 border border-white/10">
+                ${candidata.grado} ${candidata.seccion}
+              </span>
+              
+              <!-- Imagen -->
+              <img 
+                src="${candidata.fotografia}" 
+                alt="${candidata.nombre_completo}" 
+                class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=600';"
+              />
+
+              <!-- Overlay Gradiente -->
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent dark:from-slate-950 opacity-80 z-10"></div>
+            </div>
+
+            <!-- Contenido Informativo -->
+            <div class="p-6 flex flex-col justify-between flex-grow relative z-20">
+              <div class="space-y-1 mb-6">
+                <h3 class="font-outfit text-xl font-bold text-slate-900 dark:text-white tracking-tight leading-tight">${candidata.nombre_completo}</h3>
+                <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">${candidata.grado} • Sección ${candidata.seccion}</p>
+              </div>
+
+              <!-- Fila del botón (NÓTESE: Se eliminaron los votos de antemano) -->
+              <div class="flex items-center justify-end mt-auto">
+                <button 
+                  id="btn-votar-${candidata.id}"
+                  onclick="votar(${candidata.id}, '${candidata.nombre_completo.replace(/'/g, "\\'")}')"
+                  class="w-full py-2.5 px-4 font-outfit text-sm font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 border ${btnClass}"
+                  ${deshabilitado ? 'disabled' : ''}
+                >
+                  ${btnText}
+                </button>
+              </div>
+            </div>
+          `;
+          gridParticipantes.appendChild(card);
+        });
+      } catch (error) {
+        console.error(error);
+        loader.classList.add('hidden');
+        showToast('Error de red. Intenta nuevamente.', 'error');
+      }
+    }
+
+    // Función para emitir voto
+    async function votar(id, nombreCandidata) {
+      const btn = document.getElementById(`btn-votar-${id}`);
+      if (!btn || btn.disabled) return;
+
+      // Estado cargando
+      const originalText = btn.innerText;
+      btn.disabled = true;
+      btn.innerHTML = `
+        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Procesando
+      `;
+
+      try {
+        const response = await fetch(`api.php?action=votar&id=${id}`, {
+          method: 'POST'
+        });
+
+        const text = await response.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          btn.disabled = false;
+          btn.innerText = originalText;
+          showToast('Error del servidor: ' + text.substring(0, 150), 'error');
+          return;
+        }
+
+        if (response.ok && data.success) {
+          addVotedCandidate(id);
+          
+          // Guardar el nombre de la candidata votada para el mensaje de éxito
+          successMessageDetail.innerText = `Has votado por: ${nombreCandidata}`;
+
+          // Transición a la pantalla de éxito
+          votingStep.classList.add('hidden');
+          successStep.classList.remove('hidden');
+          
+          showToast('¡Voto registrado con éxito! Gracias por tu participación.');
+        } else {
+          btn.disabled = false;
+          btn.innerText = originalText;
+          showToast(data.error || 'No se pudo registrar tu voto', 'error');
+        }
+      } catch (error) {
+        console.error(error);
+        btn.disabled = false;
+        btn.innerText = originalText;
+        showToast('Error de conexión a la red. Intenta nuevamente.', 'error');
+      }
+    }
+
+    // Restablecer la vista para permitir un "Nuevo Voto" (reseteando candado local para quiosco)
+    function resetVotingView() {
+      // Limpiar bloqueo local en el quiosco
+      localStorage.removeItem('madrina_voted_ids');
+      
+      // Ocultar pantalla de éxito y mostrar grilla de candidatas
+      successStep.classList.add('hidden');
+      votingStep.classList.remove('hidden');
+      
+      // Recargar participantes en estado limpio
+      loader.classList.remove('hidden');
+      gridParticipantes.innerHTML = '';
+      loadCandidates();
+    }
+
+    // Sincronizar tema y estado en segundo plano
+    async function syncThemeAndStatus() {
+      try {
+        // Sincronizar Tema
+        const themeRes = await fetch('api.php?action=tema');
+        if (themeRes.ok) {
+          const themeData = await themeRes.json();
+          const theme = themeData.tema;
+          const currentDark = document.documentElement.classList.contains('dark');
+          if (theme === 'dark' && !currentDark) {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+          } else if (theme === 'light' && currentDark) {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+          }
+        }
+
+        // Sincronizar Estado de Votación (solo si no estamos en la pantalla de éxito)
+        if (successStep.classList.contains('hidden')) {
+          const statusRes = await fetch('api.php?action=estado-votacion');
+          if (statusRes.ok) {
+            const statusData = await statusRes.json();
+            const status = statusData.estado;
+            
+            // Actualizar badge
+            const badge = document.getElementById('public-voting-status-badge');
+            if (badge) {
+              if (status === 'abierta') {
+                badge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20";
+                badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-ping"></span> Votaciones Abiertas`;
+              } else if (status === 'pausada') {
+                badge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border border-yellow-500/20";
+                badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Votaciones Pausadas`;
+              } else {
+                badge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20";
+                badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Votaciones Cerradas`;
+              }
+            }
+
+            // Actualizar botones de votar sin reconstruir la grilla
+            const votedIds = getVotedCandidates();
+            const buttons = document.querySelectorAll('[id^="btn-votar-"]');
+            buttons.forEach(btn => {
+              const id = parseInt(btn.id.replace('btn-votar-', ''));
+              const yaVoto = votedIds.includes(id);
+              const deshabilitado = yaVoto || status !== 'abierta';
+              
+              btn.disabled = deshabilitado;
+              
+              if (yaVoto) {
+                btn.innerHTML = `
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  </svg>
+                  Votado`;
+                btn.className = 'w-full py-2.5 px-4 font-outfit text-sm font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 border bg-green-500/10 border-green-500/30 text-green-600 dark:text-green-400 cursor-default';
+              } else if (status === 'pausada') {
+                btn.innerText = 'Pausado';
+                btn.className = 'w-full py-2.5 px-4 font-outfit text-sm font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 border bg-yellow-500/10 border-yellow-500/20 text-yellow-600 dark:text-yellow-400 cursor-default';
+              } else if (status === 'cerrada') {
+                btn.innerText = 'Cerrado';
+                btn.className = 'w-full py-2.5 px-4 font-outfit text-sm font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 border bg-red-500/10 border-red-500/20 text-red-650 dark:text-red-400 cursor-default';
+              } else {
+                btn.innerText = 'Votar';
+                btn.className = 'w-full py-2.5 px-4 font-outfit text-sm font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 border bg-brand-600 border-brand-500 hover:bg-brand-500 text-white shadow-lg shadow-brand-600/10 dark:shadow-brand-600/20 active:scale-95';
+              }
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error al sincronizar estado y tema:', error);
+      }
+    }
+
+    // Inicializar carga de candidatas y configurar polling de sincronización
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCandidates();
+      setInterval(syncThemeAndStatus, 4000);
+    });
+  </script>
+</body>
+</html>

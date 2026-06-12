@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +15,7 @@
   
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
@@ -44,25 +45,33 @@
 
   <style>
     body {
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .dark body {
       background-color: #0b0f19;
       background-image: 
         radial-gradient(at 0% 0%, rgba(147, 51, 234, 0.12) 0px, transparent 50%),
         radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.12) 0px, transparent 50%);
-      background-attachment: fixed;
+    }
+
+    html:not(.dark) body {
+      background-color: #f8fafc;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(168, 85, 247, 0.08) 0px, transparent 55%),
+        radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.08) 0px, transparent 55%);
     }
 
     .glass {
-      background: rgba(17, 24, 39, 0.7);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: background-color 0.3s ease, border-color 0.3s ease;
     }
 
     .glass-card {
-      background: rgba(17, 24, 39, 0.45);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .podium-1 {
@@ -79,219 +88,248 @@
     }
   </style>
 </head>
-<body class="text-slate-100 font-sans min-h-screen flex flex-col justify-between">
+<body class="text-slate-800 dark:text-slate-100 font-sans min-h-screen flex flex-col justify-between">
 
   <!-- Protocol Warning Banner for file:// -->
   <div id="protocol-warning" class="hidden fixed inset-0 z-50 bg-slate-950/90 flex items-center justify-center p-4 backdrop-blur-sm">
-    <div class="glass max-w-lg w-full p-8 rounded-2xl border border-red-500/20 text-center space-y-4 shadow-2xl">
-      <div class="w-16 h-16 bg-red-500/10 text-red-400 rounded-full flex items-center justify-center mx-auto ring-4 ring-red-500/5">
+    <div class="glass max-w-lg w-full p-8 rounded-2xl border border-red-500/20 text-center space-y-4 shadow-2xl bg-white/90 dark:bg-slate-900/95">
+      <div class="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto ring-4 ring-red-500/5">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
         </svg>
       </div>
-      <h3 class="font-outfit text-xl font-bold text-white">⚠️ Archivo abierto de forma incorrecta</h3>
-      <p class="text-slate-300 text-sm leading-relaxed">
+      <h3 class="font-outfit text-xl font-bold">⚠️ Archivo abierto de forma incorrecta</h3>
+      <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
         Estás abriendo la página de administración directamente desde tus archivos (`file://`). Los navegadores bloquean la conexión con PHP en este modo.
       </p>
-      <div class="bg-black/40 p-4 rounded-xl text-xs text-left space-y-2 border border-white/5 font-mono">
-        <p class="text-brand-300 font-bold">Para resolverlo:</p>
-        <p class="text-slate-300">1. Asegúrate de ejecutar <span class="text-white">usbwebserver.exe</span>.</p>
-        <p class="text-slate-300">2. Copia los archivos a la carpeta <span class="text-white">root</span> de USBWebserver.</p>
-        <p class="text-slate-300">3. Entra desde tu navegador escribiendo:<br><span class="text-green-400 font-bold">http://localhost:8080/admin.html</span></p>
+      <div class="bg-slate-100 dark:bg-black/40 p-4 rounded-xl text-xs text-left space-y-2 border border-slate-200 dark:border-white/5 font-mono">
+        <p class="text-brand-600 dark:text-brand-300 font-bold">Para resolverlo:</p>
+        <p>1. Asegúrate de ejecutar <span class="font-bold">usbwebserver.exe</span>.</p>
+        <p>2. Copia los archivos a la carpeta <span class="font-bold">root</span> de USBWebserver.</p>
+        <p>3. Entra desde tu navegador escribiendo:<br><span class="text-green-600 dark:text-green-400 font-bold">http://localhost:8080/admin.html</span></p>
       </div>
     </div>
   </div>
 
-  <!-- Main Container -->
-  <div class="flex-grow w-full flex flex-col">
+  <!-- Content Container (Wrapper para login y panel principal) -->
+  <div class="flex-grow w-full flex flex-col md:flex-row">
 
-    <!-- Header / Navbar (Visible solo cuando está logueado) -->
-    <header id="admin-header" class="hidden w-full py-5 px-4 md:px-8 border-b border-white/5 glass z-30">
-      <div class="max-w-7xl mx-auto flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-pink-500 flex items-center justify-center shadow-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M2.166 4.9L10 1.154l7.834 3.746A1 1 0 0118.5 5.79v7.963a2 2 0 01-1.166 1.815l-6.834 3.27a1 1 0 01-.834 0l-6.834-3.27A2 2 0 011.5 13.753V5.79a1 1 0 01.666-.89zM10 11.25a1.25 1.25 0 100-2.5 1.25 1.25 0 000 2.5z" clip-rule="evenodd" />
+    <!-- ================= VISTA DE LOGIN ================= -->
+    <section id="login-view" class="w-full max-w-md mx-auto my-auto py-12 px-4 hidden">
+      <div class="glass p-8 rounded-2xl border border-slate-200 dark:border-white/10 shadow-2xl bg-white/80 dark:bg-slate-900/50 space-y-6">
+        <div class="text-center space-y-2">
+          <div class="w-14 h-14 bg-gradient-to-tr from-brand-600 to-pink-500 rounded-2xl flex items-center justify-center mx-auto shadow-xl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-white" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
             </svg>
+          </div>
+          <h2 class="font-outfit text-2xl font-bold text-slate-900 dark:text-white">Iniciar Sesión</h2>
+          <p class="text-slate-500 dark:text-slate-400 text-xs">Acceso reservado para administradores del sistema</p>
+        </div>
+
+        <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+          <div>
+            <label for="username" class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Usuario</label>
+            <input 
+              type="text" 
+              id="username" 
+              name="usuario" 
+              required 
+              class="w-full bg-slate-100/50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 text-sm transition-all"
+              placeholder="ej: admin"
+            />
           </div>
           <div>
-            <h1 class="font-outfit font-bold text-lg leading-none">Panel Administrativo</h1>
-            <p class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mt-1">Madrina Estudiantil 2026</p>
+            <label for="password" class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Contraseña</label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              required 
+              class="w-full bg-slate-100/50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 text-sm transition-all"
+              placeholder="••••••••"
+            />
+          </div>
+          <button 
+            type="submit" 
+            class="w-full py-3 bg-brand-600 hover:bg-brand-500 text-white font-outfit font-semibold rounded-xl transition-all shadow-lg shadow-brand-600/20 active:scale-[0.98]"
+          >
+            Ingresar al Panel
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ================= VISTA DE DASHBOARD COMPLETA (Sidebar + Content) ================= -->
+    <div id="main-admin-panel" class="hidden flex-grow flex flex-col md:flex-row w-full min-h-screen">
+      
+      <!-- 1. PANEL LATERAL (SIDEBAR) -->
+      <aside id="admin-sidebar" class="w-full md:w-64 shrink-0 glass bg-white/95 dark:bg-slate-950/40 border-b md:border-b-0 md:border-r border-slate-200/60 dark:border-white/5 flex flex-col justify-between z-30 transition-all duration-300">
+        
+        <!-- Header Sidebar -->
+        <div class="p-6 space-y-8 flex-grow">
+          <!-- Logo / Titulo -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-pink-500 flex items-center justify-center shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M2.166 4.9L10 1.154l7.834 3.746A1 1 0 0118.5 5.79v7.963a2 2 0 01-1.166 1.815l-6.834 3.27a1 1 0 01-.834 0l-6.834-3.27A2 2 0 011.5 13.753V5.79a1 1 0 01.666-.89zM10 11.25a1.25 1.25 0 100-2.5 1.25 1.25 0 000 2.5z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <h1 class="font-outfit font-bold text-xs leading-none text-slate-950 dark:text-white">CEMG J. Efraín Bú Girón</h1>
+                <p class="text-[9px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider mt-0.5">Madrina 2026</p>
+              </div>
+            </div>
+            <!-- Hamburger menu para móviles -->
+            <button onclick="toggleMobileMenu()" class="md:hidden p-1.5 rounded-lg border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Módulos / Navegación (Enlaces del Menú) -->
+          <nav id="sidebar-menu" class="space-y-1.5 hidden md:block">
+            <!-- Botón Dashboard -->
+            <button 
+              id="btn-mod-dashboard"
+              onclick="switchModule('dashboard')"
+              class="w-full flex items-center gap-3 px-4 py-3 text-xs font-semibold rounded-xl transition-all border text-left"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              Resultados en Vivo
+            </button>
+            
+            <!-- Botón Inscripción -->
+            <button 
+              id="btn-mod-inscripcion"
+              onclick="switchModule('inscripcion')"
+              class="w-full flex items-center gap-3 px-4 py-3 text-xs font-semibold rounded-xl transition-all border text-left"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+              </svg>
+              Inscripción Candidatas
+            </button>
+            
+            <!-- Botón Cuenta -->
+            <button 
+              id="btn-mod-cuenta"
+              onclick="switchModule('cuenta')"
+              class="w-full flex items-center gap-3 px-4 py-3 text-xs font-semibold rounded-xl transition-all border text-left"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Administrar Cuenta
+            </button>
+          </nav>
+        </div>
+
+        <!-- Footer Sidebar (Usuario & logout) -->
+        <div class="p-6 border-t border-slate-200/60 dark:border-white/5 space-y-4">
+          <!-- Info de usuario y Switch de tema -->
+          <div class="flex items-center justify-between">
+            <div class="flex flex-col text-left">
+              <span class="text-[10px] text-slate-500 uppercase font-bold">Admin Activo</span>
+              <span id="sidebar-admin-user" class="text-xs font-semibold text-slate-900 dark:text-white truncate max-w-[120px]">Admin</span>
+            </div>
+            
+            <!-- Sun/Moon Theme Toggle -->
+            <button onclick="toggleTheme()" class="p-2 rounded-lg border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 transition-all text-slate-600 dark:text-slate-300" title="Cambiar Tema">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 hidden dark:block" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clip-rule="evenodd" />
+              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 block dark:hidden" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <a href="index.html" class="w-full py-2 px-3 text-center rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all">
+              Ver Sitio Público
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+            <button onclick="logout()" class="w-full py-2 px-3 bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 hover:bg-red-500/20 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5">
+              Cerrar Sesión
+            </button>
           </div>
         </div>
-        <div class="flex items-center gap-4">
-          <span class="hidden sm:inline text-xs bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg text-slate-300">
-            Usuario: <strong id="admin-username" class="text-white">Admin</strong>
-          </span>
-          <a href="index.html" class="text-xs text-brand-300 hover:text-brand-200 transition-colors flex items-center gap-1 font-medium">
-            Ver Sitio
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+      </aside>
+
+      <!-- 2. ÁREA DE CONTENIDO PRINCIPAL -->
+      <main class="flex-grow p-6 md:p-10 space-y-8 overflow-y-auto max-h-screen">
+        
+        <!-- HEADER DINÁMICO DEL MÓDULO -->
+        <div class="flex items-center justify-between border-b border-slate-200/50 dark:border-white/5 pb-4">
+          <div>
+            <h2 id="module-title" class="font-outfit text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Cargando...</h2>
+            <p id="module-description" class="text-xs text-slate-500 dark:text-slate-400">Seleccione un módulo</p>
+          </div>
+          <!-- Botón menú hamburguesa flotante para móviles -->
+          <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 bg-white/50 dark:bg-slate-900/50">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
-          </a>
-          <button onclick="logout()" class="px-3.5 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 text-xs font-semibold transition-all">
-            Cerrar Sesión
           </button>
         </div>
-      </div>
-    </header>
 
-    <!-- Content Sections -->
-    <div class="w-full max-w-7xl mx-auto px-4 md:px-8 py-10 flex-grow flex items-center justify-center">
-
-      <!-- ================= VISTA DE LOGIN ================= -->
-      <section id="login-view" class="w-full max-w-md hidden">
-        <div class="glass p-8 rounded-2xl border border-white/10 shadow-2xl space-y-6">
-          <div class="text-center space-y-2">
-            <div class="w-14 h-14 bg-gradient-to-tr from-brand-600 to-pink-500 rounded-2xl flex items-center justify-center mx-auto shadow-xl">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-white" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-              </svg>
-            </div>
-            <h2 class="font-outfit text-2xl font-bold text-white">Iniciar Sesión</h2>
-            <p class="text-slate-400 text-xs">Acceso reservado para administradores del sistema</p>
-          </div>
-
-          <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
-            <div>
-              <label for="username" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Usuario</label>
-              <input 
-                type="text" 
-                id="username" 
-                name="usuario" 
-                required 
-                class="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-500 text-sm transition-all"
-                placeholder="ej: admin"
-              />
-            </div>
-            <div>
-              <label for="password" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Contraseña</label>
-              <input 
-                type="password" 
-                id="password" 
-                name="password" 
-                required 
-                class="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-500 text-sm transition-all"
-                placeholder="••••••••"
-              />
-            </div>
-            <button 
-              type="submit" 
-              class="w-full py-3 bg-brand-600 hover:bg-brand-500 text-white font-outfit font-semibold rounded-xl transition-all shadow-lg shadow-brand-600/20 active:scale-[0.98]"
-            >
-              Ingresar al Panel
-            </button>
-          </form>
-        </div>
-      </section>
-
-      <!-- ================= VISTA DE DASHBOARD ================= -->
-      <section id="dashboard-view" class="w-full hidden space-y-10">
-
-        <!-- 1. PODIO DE PREMIACIÓN -->
-        <div class="space-y-4">
-          <h2 class="font-outfit text-xl font-bold text-white tracking-tight flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-            </svg>
-            Podio de Premiación (En Tiempo Real)
-          </h2>
+        <!-- ================= MÓDULO 1: DASHBOARD DE RESULTADOS ================= -->
+        <div id="module-container-dashboard" class="space-y-10 hidden">
           
-          <div id="podium-container" class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-            <!-- El contenido dinámico del podio se inyectará aquí -->
-          </div>
-        </div>
-
-        <hr class="border-white/5">
-
-        <!-- 2. CRUD Y CONFIGURACIONES (Layout de 2 Columnas) -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
-          <!-- Columna Izquierda: Formularios (Crear y Cambiar Credenciales) -->
-          <div class="lg:col-span-1 space-y-8">
+          <!-- CONTROLES DE VOTACIÓN -->
+          <div class="glass p-6 rounded-2xl border border-slate-200 dark:border-white/5 bg-white/70 dark:bg-slate-900/40 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-xl">
+            <div class="space-y-1">
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">Control de Proceso</span>
+              <div class="flex items-center gap-2.5">
+                <h4 class="font-outfit text-base font-bold text-slate-900 dark:text-white">Votaciones:</h4>
+                <div id="voting-status-badge" class="px-3 py-1 rounded-full text-xs font-bold font-outfit shadow-sm flex items-center gap-1.5">
+                  Cargando...
+                </div>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Controla el flujo de votación en tiempo real para el portal público.</p>
+            </div>
             
-            <!-- FORMULARIO 1: REGISTRAR PARTICIPANTE -->
-            <div class="glass p-6 rounded-2xl border border-white/5 shadow-xl space-y-4">
-              <h3 class="font-outfit text-base font-bold text-white border-b border-white/5 pb-2">Registrar Candidata</h3>
-              <form id="candidate-form" onsubmit="createCandidate(event)" class="space-y-3" enctype="multipart/form-data">
-                <div>
-                  <label class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Nombre Completo</label>
-                  <input type="text" name="nombre_completo" required class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2 text-white focus:outline-none focus:border-brand-500 text-xs" placeholder="ej: Sofia Valenzuela" />
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Grado</label>
-                    <input type="text" name="grado" required class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2 text-white focus:outline-none focus:border-brand-500 text-xs" placeholder="ej: Quinto Bachillerato" />
-                  </div>
-                  <div>
-                    <label class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Sección</label>
-                    <input type="text" name="seccion" required class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2 text-white focus:outline-none focus:border-brand-500 text-xs" placeholder="ej: A" />
-                  </div>
-                </div>
-                <div>
-                  <label class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Fotografía</label>
-                  <input type="file" name="fotografia" accept="image/*" required id="file-input" class="hidden" onchange="previewImage(event)" />
-                  <div onclick="document.getElementById('file-input').click()" class="border-2 border-dashed border-white/10 hover:border-brand-500/50 rounded-lg p-4 text-center cursor-pointer transition-all bg-slate-900/50 flex flex-col items-center justify-center gap-1.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span class="text-[10px] text-slate-300 font-medium" id="upload-label">Seleccionar imagen</span>
-                  </div>
-                  <!-- Vista previa de imagen -->
-                  <div id="preview-container" class="hidden mt-2 relative rounded-lg overflow-hidden h-24 border border-white/10">
-                    <img id="img-preview" class="w-full h-full object-cover" />
-                    <button type="button" onclick="clearPreview(event)" class="absolute top-1 right-1 bg-red-600/80 hover:bg-red-600 text-white rounded-full p-1 transition-all">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-                <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-outfit text-xs font-semibold rounded-lg transition-all shadow-md active:scale-95">
-                  Registrar Candidata
-                </button>
-              </form>
+            <div class="flex flex-wrap items-center gap-3" id="voting-control-buttons">
+              <!-- Botones dinámicos -->
             </div>
-
-            <!-- FORMULARIO 2: CAMBIAR CREDENCIALES -->
-            <div class="glass p-6 rounded-2xl border border-white/5 shadow-xl space-y-4">
-              <h3 class="font-outfit text-base font-bold text-white border-b border-white/5 pb-2">Cambiar Credenciales</h3>
-              <form id="credentials-form" onsubmit="updateCredentials(event)" class="space-y-3">
-                <div>
-                  <label class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Nuevo Usuario</label>
-                  <input type="text" name="nuevo_usuario" class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2 text-white focus:outline-none focus:border-brand-500 text-xs" placeholder="Ingresa nuevo usuario (opcional)" />
-                </div>
-                <div>
-                  <label class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Nueva Contraseña</label>
-                  <input type="password" name="nuevo_password" class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2 text-white focus:outline-none focus:border-brand-500 text-xs" placeholder="Ingresa nueva contraseña (opcional)" />
-                </div>
-                <button type="submit" class="w-full py-2.5 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-outfit text-xs font-semibold rounded-lg transition-all active:scale-95">
-                  Actualizar Acceso
-                </button>
-              </form>
+          </div>
+          
+          <!-- PODIO -->
+          <div class="space-y-4">
+            <h3 class="font-outfit text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Podio de Premiación</h3>
+            <div id="podium-container" class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end pt-10">
+              <!-- Podio dinámico -->
             </div>
-
           </div>
 
-          <!-- Columna Derecha: Tabla/Lista de Candidatas y Dashboard Realtime -->
-          <div class="lg:col-span-2 space-y-4">
-            <div class="glass rounded-2xl border border-white/5 shadow-xl overflow-hidden">
-              <div class="p-6 border-b border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <hr class="border-slate-200/50 dark:border-white/5">
+
+          <!-- TABLA DE RESULTADOS -->
+          <div class="space-y-4">
+            <div class="glass rounded-2xl border border-slate-200 dark:border-white/5 shadow-xl bg-white/70 dark:bg-slate-900/40 overflow-hidden">
+              <div class="p-6 border-b border-slate-200 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <h3 class="font-outfit text-base font-bold text-white">Tabla de Resultados en Vivo</h3>
-                  <p class="text-xs text-slate-400">Actualiza automáticamente cada 3 segundos</p>
+                  <h4 class="font-outfit text-base font-bold text-slate-900 dark:text-white">Tabla de Posiciones</h4>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Actualiza automáticamente cada 3 segundos</p>
                 </div>
                 <div class="flex items-center gap-1.5 self-start sm:self-center">
-                  <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                  <span class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Conexión Activa</span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span>
+                  <span class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">Monitoreo Activo</span>
                 </div>
               </div>
               
-              <!-- Tabla de Resultados -->
               <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr class="bg-white/5 border-b border-white/5 text-slate-400 font-semibold">
+                    <tr class="bg-slate-100/50 dark:bg-white/5 border-b border-slate-200 dark:border-white/5 text-slate-500 dark:text-slate-400 font-semibold">
                       <th class="py-4 px-6">Foto</th>
                       <th class="py-4 px-6">Nombre Completo</th>
                       <th class="py-4 px-6">Grado y Sección</th>
@@ -299,14 +337,13 @@
                       <th class="py-4 px-6 text-center">Acciones</th>
                     </tr>
                   </thead>
-                  <tbody id="results-table-body" class="divide-y divide-white/5">
-                    <!-- Se inyectarán dinámicamente las candidatas aquí -->
+                  <tbody id="results-table-body" class="divide-y divide-slate-200 dark:divide-white/5">
+                    <!-- Registros dinámicos -->
                   </tbody>
                 </table>
               </div>
               
-              <!-- Estado Vacío -->
-              <div id="no-results-placeholder" class="hidden p-12 text-center text-slate-400">
+              <div id="no-results-placeholder" class="hidden p-12 text-center text-slate-500 dark:text-slate-400">
                 <p>No se encontraron candidatas registradas.</p>
               </div>
             </div>
@@ -314,34 +351,159 @@
 
         </div>
 
-      </section>
+        <!-- ================= MÓDULO 2: INSCRIPCIÓN DE CANDIDATAS ================= -->
+        <div id="module-container-inscripcion" class="max-w-2xl mx-auto hidden">
+          <div class="glass p-8 rounded-2xl border border-slate-200 dark:border-white/5 shadow-xl bg-white/70 dark:bg-slate-900/40 space-y-6">
+            <div class="border-b border-slate-200 dark:border-white/5 pb-3">
+              <h3 class="font-outfit text-lg font-bold text-slate-900 dark:text-white">Nueva Candidata</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Ingresa la información académica y fotografía de la participante</p>
+            </div>
+
+            <form id="candidate-form" onsubmit="createCandidate(event)" class="space-y-4" enctype="multipart/form-data">
+              <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nombre Completo</label>
+                <input 
+                  type="text" 
+                  name="nombre_completo" 
+                  required 
+                  class="w-full bg-slate-100/50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 text-sm transition-all" 
+                  placeholder="ej: Sofía Alejandra Valenzuela" 
+                />
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Grado Escolar</label>
+                  <input 
+                    type="text" 
+                    name="grado" 
+                    required 
+                    class="w-full bg-slate-100/50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 text-sm transition-all" 
+                    placeholder="ej: Quinto Bachillerato" 
+                  />
+                </div>
+                <div class="space-y-2">
+                  <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Sección</label>
+                  <input 
+                    type="text" 
+                    name="seccion" 
+                    required 
+                    class="w-full bg-slate-100/50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 text-sm transition-all" 
+                    placeholder="ej: A o B" 
+                  />
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Fotografía de la Participante</label>
+                <input type="file" name="fotografia" accept="image/*" required id="file-input" class="hidden" onchange="previewImage(event)" />
+                <div onclick="document.getElementById('file-input').click()" class="border-2 border-dashed border-slate-200 dark:border-white/10 hover:border-brand-500/50 rounded-xl p-8 text-center cursor-pointer transition-all bg-slate-100/50 dark:bg-slate-900/50 flex flex-col items-center justify-center gap-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <div class="space-y-1">
+                    <span class="text-xs text-slate-700 dark:text-slate-300 font-semibold" id="upload-label">Haga clic para seleccionar archivo</span>
+                    <p class="text-[10px] text-slate-500">Formatos recomendados: JPG, PNG o WEBP (máx. 5MB)</p>
+                  </div>
+                </div>
+
+                <!-- Vista previa de imagen -->
+                <div id="preview-container" class="hidden mt-4 relative rounded-xl overflow-hidden h-48 border border-slate-200 dark:border-white/10 bg-black/10">
+                  <img id="img-preview" class="w-full h-full object-cover" />
+                  <button type="button" onclick="clearPreview(event)" class="absolute top-2 right-2 bg-red-600 hover:bg-red-500 text-white rounded-full p-1.5 transition-all shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-500 text-white font-outfit font-semibold rounded-xl transition-all shadow-md active:scale-95">
+                Guardar Registro
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- ================= MÓDULO 3: ADMINISTRAR CUENTA ================= -->
+        <div id="module-container-cuenta" class="max-w-xl mx-auto hidden">
+          <div class="glass p-8 rounded-2xl border border-slate-200 dark:border-white/5 shadow-xl bg-white/70 dark:bg-slate-900/40 space-y-6">
+            <div class="border-b border-slate-200 dark:border-white/5 pb-3">
+              <h3 class="font-outfit text-lg font-bold text-slate-900 dark:text-white">Cambiar Credenciales de Acceso</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Actualiza el usuario y contraseña del administrador. Los campos vacíos no se modificarán.</p>
+            </div>
+
+            <form id="credentials-form" onsubmit="updateCredentials(event)" class="space-y-4">
+              <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nuevo Usuario</label>
+                <input 
+                  type="text" 
+                  name="nuevo_usuario" 
+                  class="w-full bg-slate-100/50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 text-sm transition-all" 
+                  placeholder="Ingresa el nuevo usuario" 
+                />
+              </div>
+              <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nueva Contraseña</label>
+                <input 
+                  type="password" 
+                  name="nuevo_password" 
+                  class="w-full bg-slate-100/50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 text-sm transition-all" 
+                  placeholder="Ingresa la nueva contraseña" 
+                />
+              </div>
+              <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-500 text-white font-outfit font-semibold rounded-xl transition-all shadow-md active:scale-95">
+                Actualizar Credenciales
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </main>
 
     </div>
   </div>
-
-  <!-- Footer -->
-  <footer class="w-full py-6 text-center border-t border-white/5 glass relative z-10">
-    <p class="text-slate-500 text-xs">
-      &copy; 2026 Colegio Estudiantil - Panel de Administración
-    </p>
-  </footer>
 
   <!-- Toast Notification System -->
   <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-md w-full px-4 sm:px-0"></div>
 
   <!-- JavaScript logics -->
   <script>
+    // Inicializar y sincronizar tema con localStorage
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
+    // Cambiar tema
+    async function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      const theme = isDark ? 'dark' : 'light';
+      localStorage.setItem('theme', theme);
+
+      try {
+        await fetch('api.php?action=admin/tema', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tema: theme })
+        });
+      } catch (error) {
+        console.error('Error al sincronizar tema con servidor:', error);
+      }
+    }
+
     // Validar protocolo al iniciar
     if (window.location.protocol === 'file:') {
       document.getElementById('protocol-warning').classList.remove('hidden');
     }
 
     let resultsInterval = null;
+    let currentModule = 'dashboard';
     const toastContainer = document.getElementById('toast-container');
     const loginView = document.getElementById('login-view');
-    const dashboardView = document.getElementById('dashboard-view');
-    const adminHeader = document.getElementById('admin-header');
-    const adminUsername = document.getElementById('admin-username');
+    const mainAdminPanel = document.getElementById('main-admin-panel');
+    const sidebarAdminUser = document.getElementById('sidebar-admin-user');
 
     // Cargar inicial y verificar sesión
     document.addEventListener('DOMContentLoaded', checkSession);
@@ -349,27 +511,27 @@
     // Toast Alert system
     function showToast(message, type = 'success') {
       const toast = document.createElement('div');
-      toast.className = `glass px-5 py-4 rounded-xl flex items-center gap-3 border shadow-2xl transition-all duration-300 transform translate-y-2 opacity-0`;
+      toast.className = `glass px-5 py-4 rounded-xl flex items-center gap-3 border shadow-2xl transition-all duration-300 transform translate-y-2 opacity-0 bg-white/95 dark:bg-slate-900/90`;
       
       if (type === 'success') {
         toast.classList.add('border-green-500/20');
         toast.innerHTML = `
           <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
           </div>
-          <div class="text-sm font-medium text-slate-200">${message}</div>
+          <div class="text-sm font-medium text-slate-800 dark:text-slate-200">${message}</div>
         `;
       } else {
         toast.classList.add('border-red-500/20');
         toast.innerHTML = `
           <div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
             </svg>
           </div>
-          <div class="text-sm font-medium text-slate-200">${message}</div>
+          <div class="text-sm font-medium text-slate-800 dark:text-slate-200">${message}</div>
         `;
       }
 
@@ -389,20 +551,40 @@
     // Check Session status from Backend PHP
     async function checkSession() {
       try {
-        const response = await fetch('api.php?action=check-session');
-        const text = await response.text();
+        const resTheme = fetch('api.php?action=tema');
+        const resSession = fetch('api.php?action=check-session');
+
+        const [themeResponse, sessionResponse] = await Promise.all([resTheme, resSession]);
+        
+        // Sincronizar tema
+        if (themeResponse.ok) {
+          try {
+            const themeData = await themeResponse.json();
+            const theme = themeData.tema;
+            if (theme === 'dark') {
+              document.documentElement.classList.add('dark');
+              localStorage.setItem('theme', 'dark');
+            } else {
+              document.documentElement.classList.remove('dark');
+              localStorage.setItem('theme', 'light');
+            }
+          } catch (e) {
+            console.error('Error parsing theme:', e);
+          }
+        }
+
+        const text = await sessionResponse.text();
         let data;
         try {
           data = JSON.parse(text);
         } catch (e) {
-          // Si no es JSON, podría ser un error de la base de datos o Apache. Mostrarlo
           showToast('Error de inicialización: ' + text.substring(0, 250), 'error');
           showDashboard(false);
           return;
         }
         
         if (data.loggedIn) {
-          adminUsername.innerText = data.usuario;
+          sidebarAdminUser.innerText = data.usuario;
           showDashboard(true);
         } else {
           showDashboard(false);
@@ -413,27 +595,86 @@
       }
     }
 
-    // Toggle views
+    // Toggle views (Login vs Admin Panel)
     function showDashboard(isActive) {
       if (isActive) {
         loginView.classList.add('hidden');
-        dashboardView.classList.remove('hidden');
-        adminHeader.classList.remove('hidden');
+        mainAdminPanel.classList.remove('hidden');
         
+        // Carga inicial de datos y configurar módulo por defecto
+        switchModule(currentModule);
         loadDashboardData();
         if (!resultsInterval) {
           resultsInterval = setInterval(loadDashboardData, 3000);
         }
       } else {
         loginView.classList.remove('hidden');
-        dashboardView.classList.add('hidden');
-        adminHeader.classList.add('hidden');
+        mainAdminPanel.classList.add('hidden');
         
         if (resultsInterval) {
           clearInterval(resultsInterval);
           resultsInterval = null;
         }
       }
+    }
+
+    // Función para cambiar de Módulos (SPA)
+    function switchModule(moduleName) {
+      currentModule = moduleName;
+      
+      // Lista de módulos del layout
+      const modules = {
+        'dashboard': {
+          title: 'Resultados de Votación',
+          desc: 'Podio en tiempo real y tabla de posiciones de las participantes.',
+          containerId: 'module-container-dashboard',
+          btnId: 'btn-mod-dashboard'
+        },
+        'inscripcion': {
+          title: 'Inscripción de Participantes',
+          desc: 'Registra una nueva candidata escolar subiendo su fotografía.',
+          containerId: 'module-container-inscripcion',
+          btnId: 'btn-mod-inscripcion'
+        },
+        'cuenta': {
+          title: 'Administración de la Cuenta',
+          desc: 'Configura las credenciales de acceso al panel administrativo.',
+          containerId: 'module-container-cuenta',
+          btnId: 'btn-mod-cuenta'
+        }
+      };
+
+      // Ocultar todos los contenedores y restablecer estilos de botones
+      Object.keys(modules).forEach(key => {
+        const mod = modules[key];
+        document.getElementById(mod.containerId).classList.add('hidden');
+        
+        // Estilos para botones inactivos
+        const btn = document.getElementById(mod.btnId);
+        btn.className = "w-full flex items-center gap-3 px-4 py-3 text-xs font-semibold rounded-xl transition-all border text-left border-slate-200 dark:border-white/5 hover:bg-slate-100 dark:hover:bg-white/5 text-slate-600 dark:text-slate-300";
+      });
+
+      // Activar el módulo seleccionado
+      const activeMod = modules[moduleName];
+      document.getElementById('module-title').innerText = activeMod.title;
+      document.getElementById('module-description').innerText = activeMod.desc;
+      document.getElementById(activeMod.containerId).classList.remove('hidden');
+      
+      // Estilos para botón activo
+      const activeBtn = document.getElementById(activeMod.btnId);
+      activeBtn.className = "w-full flex items-center gap-3 px-4 py-3 text-xs font-bold rounded-xl transition-all border text-left bg-brand-600 border-brand-500 hover:bg-brand-500 text-white shadow-md shadow-brand-600/10 dark:shadow-brand-600/20";
+      
+      // Ocultar menú en móviles tras seleccionar un módulo
+      const sidebarMenu = document.getElementById('sidebar-menu');
+      if (window.innerWidth < 768) {
+        sidebarMenu.classList.add('hidden');
+      }
+    }
+
+    // Toggle para menú responsive en móviles
+    function toggleMobileMenu() {
+      const sidebarMenu = document.getElementById('sidebar-menu');
+      sidebarMenu.classList.toggle('hidden');
     }
 
     // login
@@ -461,7 +702,7 @@
         
         if (response.ok && data.success) {
           form.reset();
-          adminUsername.innerText = data.usuario;
+          sidebarAdminUser.innerText = data.usuario;
           showDashboard(true);
           showToast('Bienvenido al panel administrador.');
         } else {
@@ -486,10 +727,14 @@
       }
     }
 
-    // Cargar datos en vivo (podio y lista)
+    // Cargar datos en vivo (podio, lista y estado de votación)
     async function loadDashboardData() {
       try {
-        const response = await fetch('api.php?action=admin/resultados');
+        const resResults = fetch('api.php?action=admin/resultados');
+        const resStatus = fetch('api.php?action=estado-votacion');
+
+        const [response, responseStatus] = await Promise.all([resResults, resStatus]);
+
         if (response.status === 401) {
           showDashboard(false);
           showToast('Sesión expirada. Por favor inicie sesión.', 'error');
@@ -512,8 +757,154 @@
 
         renderPodium(candidatas);
         renderTable(candidatas);
+
+        // Actualizar controles de estado de votación
+        if (responseStatus.ok) {
+          const statusData = await responseStatus.json();
+          renderVotingControls(statusData.estado);
+        }
       } catch (error) {
         console.error(error);
+      }
+    }
+
+    // Renderizar controles de votación dinámicamente
+    function renderVotingControls(estado) {
+      const badge = document.getElementById('voting-status-badge');
+      const buttonsContainer = document.getElementById('voting-control-buttons');
+      
+      if (!badge || !buttonsContainer) return;
+      
+      // Renderizar Badge
+      if (estado === 'abierta') {
+        badge.className = "px-3 py-1 rounded-full text-xs font-bold font-outfit shadow-sm flex items-center gap-1.5 bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20";
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Activa`;
+      } else if (estado === 'pausada') {
+        badge.className = "px-3 py-1 rounded-full text-xs font-bold font-outfit shadow-sm flex items-center gap-1.5 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border border-yellow-500/20";
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Pausada`;
+      } else {
+        badge.className = "px-3 py-1 rounded-full text-xs font-bold font-outfit shadow-sm flex items-center gap-1.5 bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20";
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Cerrada`;
+      }
+      
+      // Renderizar Botones correspondientes
+      let buttonsHTML = '';
+      if (estado === 'abierta') {
+        buttonsHTML = `
+          <button onclick="setVotingStatus('pausada')" class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 px-4 py-2.5 rounded-xl font-outfit font-semibold text-xs transition-all flex items-center gap-1.5 shadow-sm active:scale-95">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+            Pausar
+          </button>
+          <button onclick="setVotingStatus('cerrada')" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2.5 rounded-xl font-outfit font-semibold text-xs transition-all flex items-center gap-1.5 shadow-sm active:scale-95">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 002 0V8a1 1 0 00-1-1zm4 0a1 1 0 00-1 1v4a1 1 0 002 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+            Cerrar Votaciones
+          </button>
+        `;
+      } else if (estado === 'pausada') {
+        buttonsHTML = `
+          <button onclick="setVotingStatus('abierta')" class="bg-green-600 hover:bg-green-500 text-white px-4 py-2.5 rounded-xl font-outfit font-semibold text-xs transition-all flex items-center gap-1.5 shadow-sm active:scale-95">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+            </svg>
+            Reanudar
+          </button>
+          <button onclick="setVotingStatus('cerrada')" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2.5 rounded-xl font-outfit font-semibold text-xs transition-all flex items-center gap-1.5 shadow-sm active:scale-95">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 002 0V8a1 1 0 00-1-1zm4 0a1 1 0 00-1 1v4a1 1 0 002 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+            Cerrar Votaciones
+          </button>
+        `;
+      } else { // cerrada
+        buttonsHTML = `
+          <button onclick="setVotingStatus('abierta')" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2.5 rounded-xl font-outfit font-semibold text-xs transition-all flex items-center gap-1.5 shadow-md shadow-brand-600/10 active:scale-95">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+            </svg>
+            Iniciar Votaciones
+          </button>
+        `;
+      }
+      
+      // Botón reiniciar (siempre disponible, al final y con diseño secundario de peligro)
+      buttonsHTML += `
+        <button onclick="confirmResetVotes()" class="bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 hover:bg-red-500/20 px-4 py-2.5 rounded-xl font-outfit font-semibold text-xs transition-all flex items-center gap-1.5 shadow-sm active:scale-95">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 110 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+          </svg>
+          Reiniciar Votos
+        </button>
+      `;
+      
+      buttonsContainer.innerHTML = buttonsHTML;
+    }
+
+    // Cambiar estado de votación en la API
+    async function setVotingStatus(newStatus) {
+      try {
+        const response = await fetch('api.php?action=admin/estado-votacion', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ estado: newStatus })
+        });
+        
+        const text = await response.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          showToast('Error del servidor: ' + text.substring(0, 150), 'error');
+          return;
+        }
+
+        if (response.ok && data.success) {
+          showToast(`Estado de votación cambiado a: ${newStatus === 'abierta' ? 'Activa' : newStatus === 'pausada' ? 'Pausada' : 'Cerrada'}`);
+          loadDashboardData();
+        } else {
+          showToast(data.error || 'Error al cambiar el estado', 'error');
+        }
+      } catch (error) {
+        showToast('Error de red al intentar actualizar el estado', 'error');
+      }
+    }
+
+    // Confirmar y reiniciar todos los votos a 0
+    async function confirmResetVotes() {
+      const pin = prompt("⚠️ ¡ADVERTENCIA! Esta acción borrará TODOS los votos registrados de TODAS las candidatas y cerrará el proceso de votación.\n\nPara confirmar esta acción irreversible, escriba la palabra 'REINICIAR' en el cuadro de texto:");
+      
+      if (pin !== 'REINICIAR') {
+        if (pin !== null) {
+          showToast('Confirmación incorrecta. Acción cancelada.', 'error');
+        }
+        return;
+      }
+      
+      try {
+        const response = await fetch('api.php?action=admin/reiniciar-votacion', {
+          method: 'POST'
+        });
+        
+        const text = await response.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          showToast('Error del servidor: ' + text.substring(0, 150), 'error');
+          return;
+        }
+
+        if (response.ok && data.success) {
+          showToast('¡Votos reiniciados a cero correctamente y votaciones cerradas!');
+          loadDashboardData();
+        } else {
+          showToast(data.error || 'Error al reiniciar las votaciones', 'error');
+        }
+      } catch (error) {
+        showToast('Error de red al intentar reiniciar', 'error');
       }
     }
 
@@ -544,74 +935,92 @@
       let podiumHTML = '';
 
       podiumOrder.forEach((cand, idx) => {
+        let orderClass = "";
+        if (idx === 0) orderClass = "order-2 md:order-1";
+        else if (idx === 1) orderClass = "order-1 md:order-2";
+        else orderClass = "order-3 md:order-3";
+
         if (!cand) {
           podiumHTML += `
-            <div class="hidden md:flex flex-col items-center justify-center p-6 h-36 border border-white/5 rounded-2xl bg-white/5 opacity-20 text-xs">
+            <div class="hidden md:flex flex-col items-center justify-center p-6 h-36 border border-slate-200 dark:border-white/5 rounded-2xl bg-slate-100/50 dark:bg-white/5 opacity-20 text-xs ${orderClass}">
               Vacío
             </div>
           `;
           return;
         }
 
-        let label, colorClass, crownIcon, sizeClass, borderClass;
+        let label, badgeBg, crownIcon, sizeClass, borderClass, ringClass, avatarSize, cardBg, rankBadge;
         
         if (cand.id === top3[0].id) {
           label = "1er Lugar";
-          colorClass = "bg-yellow-500 text-slate-950 font-bold border-yellow-400";
+          badgeBg = "bg-gradient-to-r from-yellow-500 to-amber-500 text-slate-950 font-bold border-yellow-400 shadow-md shadow-yellow-500/20";
           borderClass = "podium-1";
-          sizeClass = "md:h-[280px] z-10 transform scale-100 md:scale-105 border-yellow-500/30";
+          sizeClass = "min-h-[340px] md:min-h-[380px] z-10 transform scale-100 md:scale-105";
+          ringClass = "ring-4 ring-yellow-400 dark:ring-yellow-500 shadow-lg shadow-yellow-500/30";
+          avatarSize = "w-28 h-28 md:w-32 md:h-32";
+          cardBg = "bg-gradient-to-b from-yellow-500/10 via-white/50 to-white/70 dark:from-yellow-500/15 dark:via-slate-900/50 dark:to-slate-900/70";
+          rankBadge = `<span class="px-2 py-0.5 rounded bg-yellow-400/20 text-yellow-600 dark:text-yellow-400 font-extrabold text-[9px] uppercase tracking-wider">Campeona</span>`;
           crownIcon = `
-            <div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-yellow-500 text-slate-900 p-2.5 rounded-full shadow-lg shadow-yellow-500/30 ring-4 ring-yellow-500/20">
+            <div class="absolute -top-7 left-1/2 -translate-x-1/2 bg-gradient-to-tr from-yellow-400 to-amber-500 text-slate-950 p-2.5 rounded-full shadow-xl shadow-yellow-500/40 ring-4 ring-yellow-400/20 animate-pulse">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
               </svg>
             </div>
           `;
-        } else if (cand.id === (top3[1] && top3[1].id)) {
+        } else if (top3[1] && cand.id === top3[1].id) {
           label = "2do Lugar";
-          colorClass = "bg-slate-400 text-slate-950 font-bold border-slate-300";
+          badgeBg = "bg-gradient-to-r from-slate-400 to-slate-500 text-slate-950 font-bold border-slate-300 shadow-md shadow-slate-400/10";
           borderClass = "podium-2";
-          sizeClass = "md:h-[230px] border-slate-500/20";
+          sizeClass = "min-h-[290px] md:min-h-[320px]";
+          ringClass = "ring-4 ring-slate-300 dark:ring-slate-400 shadow-md shadow-slate-400/20";
+          avatarSize = "w-24 h-24 md:w-26 md:h-26";
+          cardBg = "bg-gradient-to-b from-slate-400/10 via-white/50 to-white/70 dark:from-slate-400/10 dark:via-slate-900/50 dark:to-slate-900/70";
+          rankBadge = `<span class="px-2 py-0.5 rounded bg-slate-400/20 text-slate-600 dark:text-slate-400 font-extrabold text-[9px] uppercase tracking-wider">Subcampeona</span>`;
           crownIcon = `
-            <div class="absolute -top-5 left-1/2 -translate-x-1/2 bg-slate-400 text-slate-900 p-1.5 rounded-full shadow-lg ring-4 ring-slate-400/20">
+            <div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-gradient-to-tr from-slate-300 to-slate-500 text-slate-950 p-2 rounded-full shadow-lg ring-4 ring-slate-300/20">
               <span class="text-xs font-bold font-outfit px-1">2</span>
             </div>
           `;
         } else {
           label = "3er Lugar";
-          colorClass = "bg-amber-700 text-white font-bold border-amber-600";
+          badgeBg = "bg-gradient-to-r from-amber-600 to-amber-700 text-white font-bold border-amber-600 shadow-md shadow-amber-700/10";
           borderClass = "podium-3";
-          sizeClass = "md:h-[200px] border-amber-700/20";
+          sizeClass = "min-h-[250px] md:min-h-[280px]";
+          ringClass = "ring-4 ring-amber-600 dark:ring-amber-700 shadow-md shadow-amber-700/20";
+          avatarSize = "w-20 h-20 md:w-22 md:h-22";
+          cardBg = "bg-gradient-to-b from-amber-700/10 via-white/50 to-white/70 dark:from-amber-700/10 dark:via-slate-900/50 dark:to-slate-900/70";
+          rankBadge = `<span class="px-2 py-0.5 rounded bg-amber-700/20 text-amber-700 dark:text-amber-500 font-extrabold text-[9px] uppercase tracking-wider">3er Lugar</span>`;
           crownIcon = `
-            <div class="absolute -top-5 left-1/2 -translate-x-1/2 bg-amber-700 text-white p-1.5 rounded-full shadow-lg ring-4 ring-amber-700/20">
+            <div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-gradient-to-tr from-amber-600 to-amber-700 text-white p-2 rounded-full shadow-lg ring-4 ring-amber-600/20">
               <span class="text-xs font-bold font-outfit px-1">3</span>
             </div>
           `;
         }
 
         podiumHTML += `
-          <div class="relative glass-card rounded-2xl overflow-hidden p-6 flex flex-col items-center justify-between text-center ${sizeClass} ${borderClass}">
+          <div class="relative glass-card rounded-3xl overflow-visible p-6 flex flex-col items-center justify-between text-center border transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 ${cardBg} ${borderClass} ${sizeClass} ${orderClass}">
             ${crownIcon}
             
-            <div class="mt-4 flex flex-col items-center gap-3 w-full">
+            <div class="mt-5 flex flex-col items-center gap-4 w-full">
               <!-- Foto -->
-              <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-white/10 shadow-md">
+              <div class="${avatarSize} rounded-full overflow-hidden border-4 border-white dark:border-slate-800 ${ringClass} transition-all duration-500">
                 <img src="${cand.fotografia}" alt="${cand.nombre_completo}" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200';"/>
               </div>
 
               <!-- Nombre -->
-              <div>
-                <h4 class="font-outfit text-sm font-bold text-white line-clamp-1">${cand.nombre_completo}</h4>
-                <p class="text-[10px] text-slate-400 font-medium">${cand.grado} (${cand.seccion})</p>
+              <div class="space-y-1">
+                <h4 class="font-outfit text-base md:text-lg font-black text-slate-900 dark:text-white leading-tight tracking-tight">${cand.nombre_completo}</h4>
+                <p class="text-xs text-slate-500 dark:text-slate-400 font-semibold">${cand.grado}</p>
+                <p class="text-[10px] text-brand-600 dark:text-brand-400 font-bold uppercase tracking-widest">Sección ${cand.seccion}</p>
               </div>
             </div>
 
             <!-- Contador de Votos -->
-            <div class="w-full mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
-              <span class="inline-flex px-2 py-0.5 rounded-full text-[9px] font-semibold uppercase tracking-wider ${colorClass}">
-                ${label}
-              </span>
-              <span class="font-outfit text-sm font-bold text-white">${cand.votos} votos</span>
+            <div class="w-full mt-6 pt-4 border-t border-slate-200 dark:border-white/5 flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                ${rankBadge}
+              </div>
+              <span class="font-outfit text-sm font-black bg-slate-100 dark:bg-white/5 px-2.5 py-1 rounded-lg text-slate-900 dark:text-white shadow-inner">${cand.votos} <span class="text-[10px] text-slate-500 font-medium">votos</span></span>
             </div>
           </div>
         `;
@@ -636,20 +1045,20 @@
 
       candidatas.forEach((cand) => {
         const row = document.createElement('tr');
-        row.className = "hover:bg-white/5 transition-colors border-b border-white/5";
+        row.className = "hover:bg-slate-100/30 dark:hover:bg-white/5 transition-colors border-b border-slate-200 dark:border-white/5";
         row.innerHTML = `
           <td class="py-4 px-6">
-            <div class="w-10 h-10 rounded-lg overflow-hidden border border-white/10 bg-slate-900">
+            <div class="w-10 h-10 rounded-lg overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-900">
               <img src="${cand.fotografia}" alt="${cand.nombre_completo}" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100';" />
             </div>
           </td>
-          <td class="py-4 px-6 font-semibold text-white">${cand.nombre_completo}</td>
-          <td class="py-4 px-6 text-slate-300">${cand.grado} • Sección ${cand.seccion}</td>
-          <td class="py-4 px-6 text-right font-outfit font-bold text-sm text-white">${cand.votos}</td>
+          <td class="py-4 px-6 font-semibold text-slate-900 dark:text-white">${cand.nombre_completo}</td>
+          <td class="py-4 px-6 text-slate-600 dark:text-slate-300">${cand.grado} • Sección ${cand.seccion}</td>
+          <td class="py-4 px-6 text-right font-outfit font-bold text-sm text-slate-900 dark:text-white">${cand.votos}</td>
           <td class="py-4 px-6 text-center">
             <button 
               onclick="deleteCandidate(${cand.id}, '${cand.nombre_completo.replace(/'/g, "\\'")}')" 
-              class="px-2.5 py-1.5 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all font-medium text-[11px]"
+              class="px-2.5 py-1.5 rounded-md bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 hover:bg-red-500/20 transition-all font-medium text-[11px]"
             >
               Eliminar
             </button>
@@ -683,7 +1092,7 @@
       document.getElementById('file-input').value = "";
       document.getElementById('preview-container').classList.add('hidden');
       document.getElementById('img-preview').src = "";
-      document.getElementById('upload-label').innerText = "Seleccionar imagen";
+      document.getElementById('upload-label').innerText = "Haga clic para seleccionar archivo";
     }
 
     // CRUD: Registrar participante
@@ -710,9 +1119,12 @@
         if (response.ok && data.success) {
           form.reset();
           document.getElementById('preview-container').classList.add('hidden');
-          document.getElementById('upload-label').innerText = "Seleccionar imagen";
+          document.getElementById('upload-label').innerText = "Haga clic para seleccionar archivo";
           showToast('Participante registrada con éxito');
           loadDashboardData();
+          
+          // Redireccionar automáticamente al módulo Dashboard para ver los resultados
+          switchModule('dashboard');
         } else {
           showToast(data.error || 'Error al registrar participante', 'error');
         }
@@ -789,7 +1201,7 @@
         if (response.ok && data.success) {
           form.reset();
           if (payload.nuevo_usuario) {
-            adminUsername.innerText = payload.nuevo_usuario;
+            sidebarAdminUser.innerText = payload.nuevo_usuario;
           }
           showToast('Credenciales de administrador actualizadas con éxito');
         } else {

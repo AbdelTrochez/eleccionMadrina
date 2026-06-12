@@ -141,6 +141,26 @@ switch ($action) {
             exit;
         }
 
+        // Verificar el estado de la votación
+        try {
+            $stmt_config = $pdo->prepare("SELECT `valor` FROM `configuracion` WHERE `clave` = ?");
+            $stmt_config->execute(['estado_votacion']);
+            $estado = $stmt_config->fetchColumn();
+            $estado = $estado ? $estado : 'cerrada';
+            
+            if ($estado === 'pausada') {
+                http_response_code(403);
+                echo json_encode(['error' => 'Las votaciones están pausadas temporalmente por el administrador.']);
+                exit;
+            } elseif ($estado === 'cerrada') {
+                http_response_code(403);
+                echo json_encode(['error' => 'Las votaciones están cerradas actualmente.']);
+                exit;
+            }
+        } catch (PDOException $e) {
+            // Continuar si hay algún fallo imprevisto
+        }
+
         $input = getJsonInput();
         $id = isset($_GET['id']) ? intval($_GET['id']) : (isset($input['id']) ? intval($input['id']) : 0);
 
@@ -163,6 +183,112 @@ switch ($action) {
         } catch (PDOException $e) {
             http_response_code(500);
             echo json_encode(['error' => 'Error al registrar el voto']);
+        }
+        break;
+
+    // 5.1 GET /api.php?action=estado-votacion
+    case 'estado-votacion':
+        try {
+            $stmt_config = $pdo->prepare("SELECT `valor` FROM `configuracion` WHERE `clave` = ?");
+            $stmt_config->execute(['estado_votacion']);
+            $estado = $stmt_config->fetchColumn();
+            echo json_encode(['estado' => $estado ? $estado : 'cerrada']);
+        } catch (PDOException $e) {
+            echo json_encode(['estado' => 'cerrada']);
+        }
+        break;
+
+    // 5.15 GET /api.php?action=tema
+    case 'tema':
+        try {
+            $stmt_config = $pdo->prepare("SELECT `valor` FROM `configuracion` WHERE `clave` = ?");
+            $stmt_config->execute(['tema_actual']);
+            $tema = $stmt_config->fetchColumn();
+            echo json_encode(['tema' => $tema ? $tema : 'dark']);
+        } catch (PDOException $e) {
+            echo json_encode(['tema' => 'dark']);
+        }
+        break;
+
+    // 5.2 POST /api.php?action=admin/estado-votacion
+    case 'admin/estado-votacion':
+        requireAuth();
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['error' => 'Método no permitido']);
+            exit;
+        }
+
+        $input = getJsonInput();
+        $nuevo_estado = isset($input['estado']) ? trim($input['estado']) : (isset($_POST['estado']) ? trim($_POST['estado']) : '');
+
+        $allowed_estados = ['abierta', 'pausada', 'cerrada'];
+        if (!in_array($nuevo_estado, $allowed_estados)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Estado no válido']);
+            exit;
+        }
+
+        try {
+            $stmt = $pdo->prepare("UPDATE `configuracion` SET `valor` = ? WHERE `clave` = ?");
+            $stmt->execute([$nuevo_estado, 'estado_votacion']);
+            echo json_encode(['success' => true, 'estado' => $nuevo_estado]);
+        } catch (PDOException $e) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Error al actualizar el estado de las votaciones']);
+        }
+        break;
+
+    // 5.25 POST /api.php?action=admin/tema
+    case 'admin/tema':
+        requireAuth();
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['error' => 'Método no permitido']);
+            exit;
+        }
+
+        $input = getJsonInput();
+        $nuevo_tema = isset($input['tema']) ? trim($input['tema']) : (isset($_POST['tema']) ? trim($_POST['tema']) : '');
+
+        if ($nuevo_tema !== 'light' && $nuevo_tema !== 'dark') {
+            http_response_code(400);
+            echo json_encode(['error' => 'Tema no válido']);
+            exit;
+        }
+
+        try {
+            $stmt = $pdo->prepare("UPDATE `configuracion` SET `valor` = ? WHERE `clave` = ?");
+            $stmt->execute([$nuevo_tema, 'tema_actual']);
+            echo json_encode(['success' => true, 'tema' => $nuevo_tema]);
+        } catch (PDOException $e) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Error al actualizar el tema']);
+        }
+        break;
+
+
+    // 5.3 POST /api.php?action=admin/reiniciar-votacion
+    case 'admin/reiniciar-votacion':
+        requireAuth();
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['error' => 'Método no permitido']);
+            exit;
+        }
+
+        try {
+            // Reiniciar todos los votos de los participantes a 0
+            $pdo->exec("UPDATE `participantes` SET `votos` = 0");
+            
+            // Forzar el estado de la votación a cerrada tras reiniciar
+            $stmt = $pdo->prepare("UPDATE `configuracion` SET `valor` = ? WHERE `clave` = ?");
+            $stmt->execute(['cerrada', 'estado_votacion']);
+
+            echo json_encode(['success' => true, 'message' => 'Votaciones reiniciadas a 0 correctamente']);
+        } catch (PDOException $e) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Error al reiniciar las votaciones']);
         }
         break;
 

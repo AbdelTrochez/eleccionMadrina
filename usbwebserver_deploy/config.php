@@ -92,6 +92,28 @@ if (!$connected) {
             `password` VARCHAR(255) NOT NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
+        // 3. Crear tabla de configuracion para guardar el estado de las votaciones
+        $pdo->exec("CREATE TABLE IF NOT EXISTS `configuracion` (
+            `clave` VARCHAR(100) PRIMARY KEY,
+            `valor` TEXT NOT NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+        // Insertar estado inicial de las votaciones ('cerrada')
+        $check_config = $pdo->prepare("SELECT COUNT(*) FROM `configuracion` WHERE `clave` = ?");
+        $check_config->execute(['estado_votacion']);
+        if ($check_config->fetchColumn() == 0) {
+            $insert_config = $pdo->prepare("INSERT INTO `configuracion` (`clave`, `valor`) VALUES (?, ?)");
+            $insert_config->execute(['estado_votacion', 'cerrada']);
+        }
+
+        // Insertar tema por defecto ('dark')
+        $check_theme = $pdo->prepare("SELECT COUNT(*) FROM `configuracion` WHERE `clave` = ?");
+        $check_theme->execute(['tema_actual']);
+        if ($check_theme->fetchColumn() == 0) {
+            $insert_theme = $pdo->prepare("INSERT INTO `configuracion` (`clave`, `valor`) VALUES (?, ?)");
+            $insert_theme->execute(['tema_actual', 'dark']);
+        }
+
         // 3. Crear administrador 'admin' por defecto si no existe en la tabla de usuarios
         $check = $pdo->prepare("SELECT COUNT(*) FROM `usuarios` WHERE `usuario` = ?");
         $check->execute(['admin']);
